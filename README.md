@@ -10,7 +10,7 @@
 ![Lines of code](https://img.shields.io/tokei/lines/github/iamrishupatel/devlog?style=for-the-badge)
 ![GitHub repo size](https://img.shields.io/github/repo-size/iamrishupatel/devlog?style=for-the-badge)
 ![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m791924769-29870badb5a5d78e2bb8136a?style=for-the-badge)
-![Twitter](https://img.shields.io/twitter/follow/iamrishupatel?style=for-the-badge)
+![Twitter](https://img.shields.io/twitter/follow/raselshikdar_?style=for-the-badge)
 
 Devlog is blogging platform for developers built with Next.js and Firebase and is loosely inspired by Dev.to
 
