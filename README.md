@@ -16,7 +16,7 @@ Devlog is blogging platform for developers built with Next.js and Firebase and i
 
 Sign up for an 👨‍🎤 account, ✍️ write posts, then 💖 heart and ✍ comment on content created by other users. All public content is server-rendered and search-engine optimized.
 
-> visit devlog [here](https://thedevlog.vercel.app) or [here](https://devlog.rlabs.dev)
+> visit devlog [here](https://rblog-bd.vercel.app) or [here](https://devlog.rweb.site)
 
 ## Features
 
@@ -67,7 +67,7 @@ All the above commands should execute successfully and output the version number
 **Clone the project repository**
 
 ```
-git clone https://github.com/iamrishupatel/devlog.git
+git clone https://github.com/raselshikdar/rblog.git
 ```
 
 **Navigate to the project directory**
