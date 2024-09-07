@@ -67,7 +67,7 @@ All the above commands should execute successfully and output the version number
 **Clone the project repository**
 
 ```
-git clone https://github.com/raselshikdar/deblog.git
+git clone https://github.com/raselshikdar/devlog.git
 ```
 
 **Navigate to the project directory**
