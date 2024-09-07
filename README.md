@@ -16,7 +16,7 @@ Devlog is a blogging platform for the developers built with Next.js and Firebase
 
 Sign up for an 👨‍🎤 account, ✍️ write posts, then 💖 heart and ✍ comment on content created by other users. All public content is server-rendered and search-engine optimized.
 
-> ### Visit devlog [here](https://devlog.rweb.site) or [here](https://devlog.rasel.us.kg)
+### > Visit Devlog [here](https://devlog.rweb.site) or [here](https://devlog.rasel.us.kg)
 
 ## Features
 
