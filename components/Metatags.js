@@ -13,6 +13,7 @@ export default function Metatags({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
+    <meta name="google-site-verification" content="QL7oyxAB-xfJ0bzZYvQAU9CnGNnbyUx8k7fGG5n7Srk" />
 
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
