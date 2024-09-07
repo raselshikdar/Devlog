@@ -3,20 +3,20 @@
 # Devlog
 
 ![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=devlog&style=for-the-badge)
-![GitHub last commit](https://img.shields.io/github/last-commit/iamrishupatel/devlog?style=for-the-badge)
-![GitHub issues](https://img.shields.io/github/issues-raw/iamrishupatel/devlog?style=for-the-badge)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/iamrishupatel/devlog?style=for-the-badge)
-![Licence](https://img.shields.io/github/license/iamrishupatel/devlog?style=for-the-badge)
-![Lines of code](https://img.shields.io/tokei/lines/github/iamrishupatel/devlog?style=for-the-badge)
-![GitHub repo size](https://img.shields.io/github/repo-size/iamrishupatel/devlog?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/raselshikdar/devlog?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues-raw/raselshikdar/devlog?style=for-the-badge)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/raselshikdar/devlog?style=for-the-badge)
+![Licence](https://img.shields.io/github/license/raselshikdar/devlog?style=for-the-badge)
+![Lines of code](https://img.shields.io/tokei/lines/github/raselshikdar/devlog?style=for-the-badge)
+![GitHub repo size](https://img.shields.io/github/repo-size/raselshikdar/devlog?style=for-the-badge)
 ![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m791924769-29870badb5a5d78e2bb8136a?style=for-the-badge)
 ![Twitter](https://img.shields.io/twitter/follow/raselshikdar_?style=for-the-badge)
 
-Devlog is blogging platform for developers built with Next.js and Firebase and is loosely inspired by Dev.to
+Devlog is a blogging platform for the developers built with Next.js and Firebase and is loosely inspired by Dev.to
 
 Sign up for an 👨‍🎤 account, ✍️ write posts, then 💖 heart and ✍ comment on content created by other users. All public content is server-rendered and search-engine optimized.
 
-> visit devlog [here](https://rblog-bd.vercel.app) or [here](https://devlog.rweb.site)
+> visit devlog [here](https://devlog.rweb.site) or [here](https://devlog.rasel.us.kg)
 
 ## Features
 
@@ -67,7 +67,7 @@ All the above commands should execute successfully and output the version number
 **Clone the project repository**
 
 ```
-git clone https://github.com/raselshikdar/rblog.git
+git clone https://github.com/raselshikdar/deblog.git
 ```
 
 **Navigate to the project directory**
