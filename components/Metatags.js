@@ -2,14 +2,14 @@ import Head from "next/head";
 
 export default function Metatags({
   title = "Devlog",
-  description = "DevLog is blogging platform for developers. This app is built with Next.js and Firebase and is loosely inspired by Dev.to",
+  description = "DevLog is a blogging platform for the developers. This website is built with Next.js and Firebase and is loosely inspired by Dev.to",
   image = "/featured.png",
 }) {
   return (
     <Head>
       <title>{title}</title>
       <meta name="twitter:card" content="summary" />
-      <meta name="twitter:site" content="@iamrishupatel" />
+      <meta name="twitter:site" content="@raselshikdar_" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
