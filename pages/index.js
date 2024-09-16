@@ -92,7 +92,7 @@ export default function Home(props) {
           </p>
           <p>
             Sign up for an 👨‍🎤 account, ✍️ write posts; 💖 hearts & 💬 comments other's posts. All public content is server-rendered and
-            seo optimized. <center>( <u><a href="/raselshikdar/privacy-policy" aria-lebel="Privacy Policy">🛡️ Privacy Policy</a></u> & <u><a href="/raselshikdar/terms-of-service" aria-lebel="Terms of Service">📃 T.O.S</a></u> )</center>
+            seo optimized. <center>( 🛡️<u><a href="/raselshikdar/privacy-policy" aria-lebel="Privacy Policy"> Privacy Policy</a></u> & 📃<u><a href="/raselshikdar/terms-of-service" aria-lebel="Terms of Service"> T.O.S</a></u> )</center>
           </p>
           <span className="exit-hero" onClick={exitHero}>
             <abbr title="close">
