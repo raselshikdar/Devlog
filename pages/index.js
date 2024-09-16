@@ -91,8 +91,8 @@ export default function Home(props) {
             inspired by Dev.to
           </p>
           <p>
-            Sign up for an 👨‍🎤 account, ✍️ write posts, 💖 hearts & 💬 comments other's posts. All public content is server-rendered and
-            search-engine optimized.
+            Sign up for an 👨‍🎤 account, ✍️ write posts; 💖 hearts & 💬 comments other's posts. All public content is server-rendered and
+            seo optimized. <a href="/raselshikdar/privacy-policy">P.P</> & <a href="/raselshikdar/terms-of-service">T.O.S</a>
           </p>
           <span className="exit-hero" onClick={exitHero}>
             <abbr title="close">
