@@ -92,7 +92,7 @@ export default function Home(props) {
           </p>
           <p>
             Sign up for an 👨‍🎤 account, ✍️ write posts; 💖 hearts & 💬 comments other's posts. All public content is server-rendered and
-            seo optimized. (<b><a href="/rasel/documentations" aria-lebel="Documentations"><i>📃 <u>Read the Documentations...</u></i></a></b>)
+            seo optimized. (<b><a href="/rasel/documentations" aria-lebel="Documentations"><i>📃 Read the <u>Documentations...</u></i></a></b>)
           </p>
           <span className="exit-hero" onClick={exitHero}>
             <abbr title="close">
