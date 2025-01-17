@@ -81,7 +81,7 @@ export default function Home(props) {
     <main>
       <Metatags
         title="Devlog | Home"
-        description="Get the latest posts on our site"
+        description="Empowering developers to share, learn, and grow—one blog at a time."
       />
       {!exitedHero && (
         <div className="card card-info hero">
@@ -92,7 +92,7 @@ export default function Home(props) {
           </p>
           <p>
             Sign up for an 👨‍🎤 account, ✍️ write posts; 💖 hearts & 💬 comments other's posts. All public content is server-rendered and
-            seo optimized. (<a href="/raselshikdar/about-us" aria-lebel="About Us">📖 About</a> • <a href="/raselshikdar/privacy-policy" aria-lebel="Privacy Policy">🛡️ Privacy</a> • <a href="/raselshikdar/terms-of-service" aria-lebel="Terms of Service">📃 Terms</a>)
+            seo optimized. (<b> Read the <a href="/rasel/documentations" aria-lebel="Documentations">📃 Documentations...</a></b>)
           </p>
           <span className="exit-hero" onClick={exitHero}>
             <abbr title="close">
