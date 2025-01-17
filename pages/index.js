@@ -87,10 +87,10 @@ export default function Home(props) {
         <div className="card card-info hero">
           <h2>💡 Welcome to Devlog</h2>
           <p>
-            Built with Next.js and Firebase; loosely inspired by Dev.to
+            Built with Next.js and Firebase & is loosely inspired by Dev.to
           </p>
           <p>
-            Create an account to ✍️ write posts; 💖 heart & 💬 comment on other's posts. All content is SEO-optimized and server-rendered. (<b><a href="/rasel/documentations" aria-lebel="Documentations"><i>📃 Read the <u>Docs...</u></i></a></b>)
+            Create an account to ✍️ write posts; 💖 heart & 💬 comment on other's posts. All content is SEO-optimized and server-rendered.<br/>(<b><a href="/rasel/documentations" aria-lebel="Documentations"><i>📃 Read the <u>Docs...</u></i></a></b>)
           </p>
           <span className="exit-hero" onClick={exitHero}>
             <abbr title="close">
