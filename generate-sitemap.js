@@ -22,7 +22,7 @@ const generateSitemap = async () => {
 
     sitemap.end();
 
-    const sitemapOutput = resolve(__dirname, 'public', 'sitemap.xml');
+    const sitemapOutput = resolve(__dirname, 'public', 'sitemap.xml'); // Ensure this points to 'public/sitemap.xml'
     const writeStream = createWriteStream(sitemapOutput);
 
     // Error handling for stream
