@@ -9,7 +9,7 @@ export default function PostContent({ post }) {
       ? new Date(post.createdAt)
       : post.createdAt.toDate();
 
-  createdAt = format(createdAt, "eeee MMM dd, yyyy");
+  createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a");
 
   return (
     <div className="card">
