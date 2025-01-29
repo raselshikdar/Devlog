@@ -11,5 +11,51 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  <!-- Add more URLs as needed -->
+
+  <!-- Manually Added URLs -->
+  <url>
+    <loc>https://devlog.rweb.site/rasel/sponsor-us</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://devlog.rweb.site/rasel/new-feature-multi-language-supports-for-codes</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://devlog.rweb.site/rasel/how-to-write-blog-posts-in-devlog-bangla-tutorial</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://devlog.rweb.site/rasel/how-to-write-blog-posts-in-devlog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://devlog.rweb.site/rasel/documentations</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://devlog.rweb.site/rasel/contact-us</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://devlog.rweb.site/rasel/terms-of-use</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://devlog.rweb.site/rasel/privacy-policy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://devlog.rweb.site/rasel/about-us</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
