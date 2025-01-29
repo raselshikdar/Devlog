@@ -4,3 +4,15 @@
   gap: 1rem;
   margin: 1rem 0;
 }
+
+/* Added styles for "days ago" */
+.postHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.daysAgo {
+  font-size: 0.85rem;
+  color: #666;
+}
