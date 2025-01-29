@@ -13,10 +13,7 @@ const generateSitemap = async () => {
   ];
 
   // Write links to sitemap
-  links.forEach(link => {
-    console.log('Writing link:', link);  // Add logging
-    sitemap.write(link);
-  });
+  links.forEach(link => sitemap.write(link));
 
   sitemap.end();
 
