@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const sitemap = require('sitemap');
+const { SitemapStream, streamToPromise } = require('sitemap'); // Correct import for v6.x
 require('dotenv').config();
 
-// Your site URLs
+// URLs to include in the sitemap
 const urls = [
   { url: '/', changefreq: 'daily', priority: 1.0 },
   { url: '/about', changefreq: 'monthly', priority: 0.8 },
@@ -11,22 +11,25 @@ const urls = [
   // Add other URLs here
 ];
 
-// Ensure you include your website URL and other pages dynamically if needed
-const sitemapStream = sitemap.createSitemap({
-  hostname: process.env.SITE_URL || 'https://www.example.com', // Use your site URL
-  cacheTime: 600000, // Cache for 600 seconds (10 minutes)
-  urls: urls
-});
+// Create the sitemap stream
+const sitemapStream = new SitemapStream({ hostname: process.env.SITE_URL || 'https://www.example.com' });
 
-// Write the sitemap.xml file to the public directory
-const sitemapPath = path.join(__dirname, 'public', 'sitemap.xml');
+// Create a write stream to the sitemap.xml file in the public directory
+const writeStream = fs.createWriteStream(path.join(__dirname, 'public', 'sitemap.xml'));
 
-sitemapStream.toXML((err, xml) => {
-  if (err) {
+// Pipe the sitemap stream into the file
+streamToPromise(sitemapStream.pipe(writeStream))
+  .then(() => {
+    console.log('Sitemap generated successfully!');
+  })
+  .catch(err => {
     console.error('Error generating sitemap:', err);
-    return;
-  }
-  
-  fs.writeFileSync(sitemapPath, xml);
-  console.log('Sitemap generated successfully!');
+  });
+
+// Add each URL to the sitemap stream
+urls.forEach(url => {
+  sitemapStream.write(url);
 });
+
+// Close the stream
+sitemapStream.end();
