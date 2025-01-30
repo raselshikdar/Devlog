@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { SitemapStream, streamToPromise } = require('sitemap'); // Correct import for v6.x
+const { SitemapStream } = require('sitemap');
 require('dotenv').config();
 
 // URLs to include in the sitemap
@@ -11,20 +11,14 @@ const urls = [
   // Add other URLs here
 ];
 
-// Create the sitemap stream
-const sitemapStream = new SitemapStream({ hostname: process.env.SITE_URL || 'https://www.example.com' });
-
 // Create a write stream to the sitemap.xml file in the public directory
 const writeStream = fs.createWriteStream(path.join(__dirname, 'public', 'sitemap.xml'));
 
+// Create the sitemap stream
+const sitemapStream = new SitemapStream({ hostname: process.env.SITE_URL || 'https://www.example.com' });
+
 // Pipe the sitemap stream into the file
-streamToPromise(sitemapStream.pipe(writeStream))
-  .then(() => {
-    console.log('Sitemap generated successfully!');
-  })
-  .catch(err => {
-    console.error('Error generating sitemap:', err);
-  });
+sitemapStream.pipe(writeStream);
 
 // Add each URL to the sitemap stream
 urls.forEach(url => {
@@ -33,3 +27,11 @@ urls.forEach(url => {
 
 // Close the stream
 sitemapStream.end();
+
+writeStream.on('finish', () => {
+  console.log('Sitemap generated successfully!');
+});
+
+writeStream.on('error', (err) => {
+  console.error('Error writing sitemap:', err);
+});
