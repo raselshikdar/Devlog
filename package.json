@@ -27,6 +27,6 @@
     "remark-gfm": "^3.0.1",
     "yup": "^0.32.11",
     "sitemap": "^6.2.0",
-    "dotenv": "^16.0.0"  // Ensure dotenv is listed here if needed
+    "dotenv": "^16.0.0"
   }
 }
