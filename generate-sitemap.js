@@ -1,65 +1,57 @@
+require('dotenv').config();
 const { SitemapStream, streamToPromise } = require('sitemap');
 const { createWriteStream } = require('fs');
 const { resolve } = require('path');
-require('dotenv').config();
-const admin = require('firebase-admin');
 
-// Initialize Firebase Admin SDK with environment variables
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      type: process.env.FIREBASE_TYPE,
-      project_id: process.env.FIREBASE_PROJECT_ID,
-      private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-      private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      client_email: process.env.FIREBASE_CLIENT_EMAIL,
-      client_id: process.env.FIREBASE_CLIENT_ID,
-      auth_uri: process.env.FIREBASE_AUTH_URI,
-      token_uri: process.env.FIREBASE_TOKEN_URI,
-      auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_CERT_URL,
-      client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
-    }),
-  });
-}
-
-const db = admin.firestore();
+// Replace this with your domain
+const BASE_URL = process.env.SITE_URL || 'https://devlog.rweb.site';
 
 const generateSitemap = async () => {
   try {
-    console.log('Generating sitemap...');
-    const hostname = 'https://devlog.rweb.site';
-    const sitemap = new SitemapStream({ hostname });
+    console.log('Starting sitemap generation...');
+    const sitemap = new SitemapStream({ hostname: BASE_URL });
 
-    // Static Routes
+    // Static and dynamic routes
     const links = [
       { url: '/', changefreq: 'daily', priority: 1.0 },
       { url: '/about', changefreq: 'monthly', priority: 0.8 },
-      { url: '/contact', changefreq: 'monthly', priority: 0.8 },
-      { url: '/terms-of-use', changefreq: 'yearly', priority: 0.6 },
-      { url: '/privacy-policy', changefreq: 'yearly', priority: 0.6 },
+      { url: '/rasel/sponsor-us', changefreq: 'monthly', priority: 0.8 },
+      { url: '/rasel/new-feature-multi-language-supports-for-codes', changefreq: 'weekly', priority: 0.7 },
+      { url: '/rasel/how-to-write-blog-posts-in-devlog-bangla-tutorial', changefreq: 'weekly', priority: 0.7 },
+      { url: '/rasel/how-to-write-blog-posts-in-devlog', changefreq: 'weekly', priority: 0.7 },
+      { url: '/rasel/documentations', changefreq: 'monthly', priority: 0.8 },
+      { url: '/rasel/contact-us', changefreq: 'monthly', priority: 0.8 },
+      { url: '/rasel/terms-of-use', changefreq: 'yearly', priority: 0.6 },
+      { url: '/rasel/privacy-policy', changefreq: 'yearly', priority: 0.6 },
+      { url: '/rasel/about-us', changefreq: 'monthly', priority: 0.8 }
     ];
 
-    // Fetch Blog Posts
-    const postsSnapshot = await db.collection('posts').get();
-    postsSnapshot.forEach((doc) => {
-      links.push({
-        url: `/blog/${doc.id}`,
-        changefreq: 'weekly',
-        priority: 0.7,
-      });
+    // Write links to sitemap
+    links.forEach(link => {
+      console.log('Writing link:', link);
+      sitemap.write(link);
     });
 
-    // Write to sitemap
-    links.forEach((link) => sitemap.write(link));
     sitemap.end();
 
     const sitemapOutput = resolve(__dirname, 'public', 'sitemap.xml');
     const writeStream = createWriteStream(sitemapOutput);
 
-    await streamToPromise(sitemap.pipe(writeStream));
-    console.log('Sitemap generated successfully!');
+    // Handle errors
+    writeStream.on('error', (error) => {
+      console.error('Error writing sitemap:', error);
+    });
+
+    // Stream the sitemap to the file
+    await streamToPromise(sitemap.pipe(writeStream))
+      .then(() => {
+        console.log('Sitemap generated at', sitemapOutput);
+      })
+      .catch((error) => {
+        console.error('Error generating sitemap:', error);
+      });
   } catch (error) {
-    console.error('Error generating sitemap:', error);
+    console.error('Error in generateSitemap:', error);
   }
 };
 
