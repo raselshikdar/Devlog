@@ -1,17 +1,15 @@
-require('dotenv').config();
-const { SitemapStream, streamToPromise } = require('sitemap');
-const { createWriteStream } = require('fs');
-const { resolve } = require('path');
+import 'dotenv/config';
+import { SitemapStream, streamToPromise } from 'sitemap';
+import { createWriteStream } from 'fs';
+import { resolve } from 'path';
 
-// Replace this with your domain
-const BASE_URL = process.env.SITE_URL || 'https://devlog.rweb.site';
+const SITE_URL = process.env.SITE_URL || 'https://devlog.rweb.site';
 
 const generateSitemap = async () => {
   try {
     console.log('Starting sitemap generation...');
-    const sitemap = new SitemapStream({ hostname: BASE_URL });
+    const sitemap = new SitemapStream({ hostname: SITE_URL });
 
-    // Static and dynamic routes
     const links = [
       { url: '/', changefreq: 'daily', priority: 1.0 },
       { url: '/about', changefreq: 'monthly', priority: 0.8 },
@@ -26,33 +24,17 @@ const generateSitemap = async () => {
       { url: '/rasel/about-us', changefreq: 'monthly', priority: 0.8 }
     ];
 
-    // Write links to sitemap
-    links.forEach(link => {
-      console.log('Writing link:', link);
-      sitemap.write(link);
-    });
-
+    links.forEach(link => sitemap.write(link));
     sitemap.end();
 
     const sitemapOutput = resolve(__dirname, 'public', 'sitemap.xml');
     const writeStream = createWriteStream(sitemapOutput);
-
-    // Handle errors
-    writeStream.on('error', (error) => {
-      console.error('Error writing sitemap:', error);
-    });
-
-    // Stream the sitemap to the file
-    await streamToPromise(sitemap.pipe(writeStream))
-      .then(() => {
-        console.log('Sitemap generated at', sitemapOutput);
-      })
-      .catch((error) => {
-        console.error('Error generating sitemap:', error);
-      });
+    
+    await streamToPromise(sitemap.pipe(writeStream));
+    console.log('Sitemap generated at', sitemapOutput);
   } catch (error) {
-    console.error('Error in generateSitemap:', error);
+    console.error('Error generating sitemap:', error);
   }
 };
 
-generateSitemap().catch(console.error);
+generateSitemap();
