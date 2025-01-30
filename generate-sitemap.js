@@ -6,8 +6,8 @@ require('dotenv').config();
 // URLs to include in the sitemap
 const urls = [
   { url: '/', changefreq: 'daily', priority: 1.0 },
-  { url: '/about', changefreq: 'monthly', priority: 0.8 },
-  { url: '/contact', changefreq: 'monthly', priority: 0.8 },
+  { url: '/rasel/about-us', changefreq: 'monthly', priority: 0.8 },
+  { url: '/rasel/contact-us', changefreq: 'monthly', priority: 0.8 },
   // Add other URLs here
 ];
 
@@ -15,7 +15,7 @@ const urls = [
 const writeStream = fs.createWriteStream(path.join(__dirname, 'public', 'sitemap.xml'));
 
 // Create the sitemap stream
-const sitemapStream = new SitemapStream({ hostname: process.env.SITE_URL || 'https://www.example.com' });
+const sitemapStream = new SitemapStream({ hostname: process.env.SITE_URL || 'https://devlog.rweb.site' });
 
 // Pipe the sitemap stream into the file
 sitemapStream.pipe(writeStream);
