@@ -1,49 +1,32 @@
-// Instead of: 
-// import { SitemapStream, streamToPromise } from 'sitemap';
+const fs = require('fs');
+const path = require('path');
+const sitemap = require('sitemap');
+require('dotenv').config();
 
-// Use: 
-const { SitemapStream, streamToPromise } = require('sitemap');
-const { createWriteStream } = require('fs');
-const { resolve } = require('path');
-const dotenv = require('dotenv'); // Make sure dotenv is required
-dotenv.config();  // Load environment variables
+// Your site URLs
+const urls = [
+  { url: '/', changefreq: 'daily', priority: 1.0 },
+  { url: '/about', changefreq: 'monthly', priority: 0.8 },
+  { url: '/contact', changefreq: 'monthly', priority: 0.8 },
+  // Add other URLs here
+];
 
-const generateSitemap = async () => {
-  try {
-    console.log('Starting sitemap generation...');
-    const sitemap = new SitemapStream({ hostname: 'https://devlog.rweb.site' });
+// Ensure you include your website URL and other pages dynamically if needed
+const sitemapStream = sitemap.createSitemap({
+  hostname: process.env.SITE_URL || 'https://www.example.com', // Use your site URL
+  cacheTime: 600000, // Cache for 600 seconds (10 minutes)
+  urls: urls
+});
 
-    const links = [
-      { url: '/', changefreq: 'daily', priority: 1.0 },
-      { url: '/about', changefreq: 'monthly', priority: 0.8 },
-      // Other links as needed
-    ];
+// Write the sitemap.xml file to the public directory
+const sitemapPath = path.join(__dirname, 'public', 'sitemap.xml');
 
-    links.forEach(link => {
-      console.log('Writing link:', link);
-      sitemap.write(link);
-    });
-
-    sitemap.end();
-
-    const sitemapOutput = resolve(__dirname, 'public', 'sitemap.xml');
-    const writeStream = createWriteStream(sitemapOutput);
-
-    // Handle errors
-    writeStream.on('error', (error) => {
-      console.error('Error writing sitemap:', error);
-    });
-
-    await streamToPromise(sitemap.pipe(writeStream))
-      .then(() => {
-        console.log('Sitemap generated at', sitemapOutput);
-      })
-      .catch((error) => {
-        console.error('Error generating sitemap:', error);
-      });
-  } catch (error) {
-    console.error('Error in generateSitemap:', error);
+sitemapStream.toXML((err, xml) => {
+  if (err) {
+    console.error('Error generating sitemap:', err);
+    return;
   }
-};
-
-generateSitemap().catch(console.error);
+  
+  fs.writeFileSync(sitemapPath, xml);
+  console.log('Sitemap generated successfully!');
+});
