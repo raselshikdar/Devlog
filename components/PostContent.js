@@ -2,7 +2,7 @@ import Link from "next/link";
 import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
-import { FaFacebook, FaTwitter, FaTelegram, FaCopy } from "react-icons/fa"; // Importing icons
+import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; // Importing WhatsApp icon
 
 // UI component for main post content
 export default function PostContent({ post }) {
@@ -54,6 +54,17 @@ export default function PostContent({ post }) {
             rel="noopener noreferrer"
           >
             <FaTwitter size={16} />
+          </a>
+
+          {/* WhatsApp */}
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(post?.title + " " + currentUrl)}`}
+            className="btn"
+            style={{ backgroundColor: "#25D366", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaWhatsapp size={16} />
           </a>
 
           {/* Telegram */}
