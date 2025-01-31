@@ -17,6 +17,9 @@ export default function PostContent({ post }) {
 
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a");
 
+  // Title of the post
+  const postTitle = post?.title;
+
   return (
     <>
       <div className="card">
@@ -36,7 +39,7 @@ export default function PostContent({ post }) {
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
           {/* Facebook */}
           <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(postTitle)}`}
             className="btn"
             style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -47,7 +50,7 @@ export default function PostContent({ post }) {
 
           {/* Twitter */}
           <a
-            href={`https://twitter.com/share?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(post?.title)}`}
+            href={`https://twitter.com/share?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(postTitle)}`}
             className="btn"
             style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -58,7 +61,7 @@ export default function PostContent({ post }) {
 
           {/* WhatsApp */}
           <a
-            href={`https://wa.me/?text=${encodeURIComponent(post?.title + " " + currentUrl)}`}
+            href={`https://wa.me/?text=${encodeURIComponent(postTitle + " " + currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#25D366", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -69,7 +72,7 @@ export default function PostContent({ post }) {
 
           {/* Telegram */}
           <a
-            href={`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(post?.title)}`}
+            href={`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(postTitle)}`}
             className="btn"
             style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -83,7 +86,7 @@ export default function PostContent({ post }) {
             className="btn"
             style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             onClick={() => {
-              navigator.clipboard.writeText(currentUrl);
+              navigator.clipboard.writeText(postTitle + " " + currentUrl);
               alert("Link copied to clipboard!");
             }}
           >
