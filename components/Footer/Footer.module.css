@@ -1,6 +1,6 @@
 .footer {
   background-color: var(--color-primary);
-  color: var(--colors-text);
+  color: var(--color-text);
   border-top: 1px solid var(--color-border);
   padding: 2rem 10vw;
   margin-top: auto;
@@ -31,6 +31,11 @@
 }
 
 .copy {
-  font-size: 0.8rem;
-  opacity: 0.8;
+  background-color: #000; /* Matte black */
+  color: #fff; /* White text */
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  display: inline-block;
+  opacity: 1;
 }
