@@ -12,9 +12,9 @@ export default function Footer() {
           <Link href="/rasel/privacy-policy">Privacy Policy</Link>
           <Link href="/rasel/documentations">Documentation</Link>
         </div>
-        <div className={s.copy}>
-          © {new Date().getFullYear()} <Link href="/">Devlog</Link>. All rights reserved.
-        </div>
+      </div>
+      <div className={s.copy}>
+        © {new Date().getFullYear()} <Link href="/">Devlog</Link>. All rights reserved.
       </div>
     </footer>
   );
