@@ -33,50 +33,50 @@ export default function PostContent({ post }) {
 
       <div className="card">
         <h3>Share This Post</h3>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
           {/* Facebook */}
           <a
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
             className="btn"
-            style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1.2rem" }}
+            style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaFacebook />
+            <FaFacebook size={16} />
           </a>
 
           {/* Twitter */}
           <a
             href={`https://twitter.com/share?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(post?.title)}`}
             className="btn"
-            style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1.2rem" }}
+            style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaTwitter />
+            <FaTwitter size={16} />
           </a>
 
           {/* Telegram */}
           <a
             href={`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(post?.title)}`}
             className="btn"
-            style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1.2rem" }}
+            style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaTelegram />
+            <FaTelegram size={16} />
           </a>
 
           {/* Copy Link */}
           <button
             className="btn"
-            style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1.2rem" }}
+            style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             onClick={() => {
               navigator.clipboard.writeText(currentUrl);
               alert("Link copied to clipboard!");
             }}
           >
-            <FaCopy />
+            <FaCopy size={16} />
           </button>
         </div>
       </div>
