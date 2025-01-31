@@ -5,17 +5,20 @@ require('dotenv').config();
 
 // URLs to include in the sitemap
 const urls = [
-  { url: '/', changefreq: 'daily', priority: 1.0 },
-  { url: '/rasel/about-us', changefreq: 'monthly', priority: 0.8 },
-  { url: '/rasel/contact-us', changefreq: 'monthly', priority: 0.8 },
-  { url: '/rasel/sponsor-us', changefreq: 'monthly', priority: 0.8 },
-  { url: '/rasel/documentations', changefreq: 'monthly', priority: 0.8 },
-  { url: '/rasel/terms-of-use', changefreq: 'monthly', priority: 0.8 },
-  { url: '/rasel/privacy-policy', changefreq: 'monthly', priority: 0.8 },
-  { url: '/rasel/how-to-write-blog-posts-in-devlog', changefreq: 'monthly', priority: 0.8 },
-  { url: '/rasel/how-to-write-blog-posts-in-devlog-bangla-tutorial', changefreq: 'monthly', priority: 0.8 },
-  { url: '/rasel/new-feature-multi-language-supports-for-codes', changefreq: 'monthly', priority: 0.8 },
-  { url: '/wasik/this-is-an-awesome-blog', changefreq: 'monthly', priority: 0.8 },
+  { url: '/', changefreq: 'daily', priority: 1.0 }, // Homepage should be crawled frequently. (Correct)
+
+{ url: '/rasel/about-us', changefreq: 'yearly', priority: 0.5 }, // About pages rarely change. (Correct)
+{ url: '/rasel/contact-us', changefreq: 'monthly', priority: 0.6 }, // Contact pages may change more often (e.g., contact info updates).
+{ url: '/rasel/sponsor-us', changefreq: 'monthly', priority: 0.7 }, // Sponsorship details may change more frequently than yearly.
+{ url: '/rasel/documentations', changefreq: 'weekly', priority: 0.8 }, // Documentation often receives updates, so weekly is better.
+{ url: '/rasel/terms-of-use', changefreq: 'yearly', priority: 0.5 }, // Legal pages change infrequently. (Correct)
+{ url: '/rasel/privacy-policy', changefreq: 'yearly', priority: 0.5 }, // Privacy policies are updated occasionally. (Correct)
+
+{ url: '/rasel/how-to-write-blog-posts-in-devlog', changefreq: 'monthly', priority: 0.7 }, // Correct
+{ url: '/rasel/how-to-write-blog-posts-in-devlog-bangla-tutorial', changefreq: 'monthly', priority: 0.7 }, // Correct
+{ url: '/rasel/new-feature-multi-language-supports-for-codes', changefreq: 'weekly', priority: 0.8 }, // New features may get updates. (Correct)
+
+{ url: '/wasik/this-is-an-awesome-blog', changefreq: 'monthly', priority: 0.6 } // Individual blog posts don’t need high priority. (Correct),
   // Add other URLs here
 ];
 
