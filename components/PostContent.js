@@ -1,14 +1,18 @@
 import Link from "next/link";
 import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
-import PostShare from "./PostShare"; // Import the PostShare component
+import { useEffect, useState } from "react";
 
 // UI component for main post content
 export default function PostContent({ post }) {
-  let createdAt =
-    typeof post?.createdAt === "number"
-      ? new Date(post.createdAt)
-      : post.createdAt.toDate();
+  let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
+  const [currentUrl, setCurrentUrl] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href);
+    }
+  }, []);
 
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a");
 
@@ -26,12 +30,74 @@ export default function PostContent({ post }) {
         <MarkdownPreview content={post?.content} />
       </div>
 
-      {/* Post sharing feature added in a separate card */}
-      <div className="card share-card">
-        <PostShare
-          postUrl={typeof window !== "undefined" ? window.location.href : ""}
-          postTitle={post?.title}
-        />
+      <div className="card">
+        <h3>Share This Post</h3>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          {/* Facebook */}
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
+            className="btn"
+            style={{ backgroundColor: "#3b5998", color: "white" }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Facebook
+          </a>
+
+          {/* Twitter */}
+          <a
+            href={`https://twitter.com/share?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(post?.title)}`}
+            className="btn"
+            style={{ backgroundColor: "#1DA1F2", color: "white" }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Twitter
+          </a>
+
+          {/* Telegram */}
+          <a
+            href={`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(post?.title)}`}
+            className="btn"
+            style={{ backgroundColor: "#0088cc", color: "white" }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Telegram
+          </a>
+
+          {/* WhatsApp */}
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(post?.title + " " + currentUrl)}`}
+            className="btn"
+            style={{ backgroundColor: "#25D366", color: "white" }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp
+          </a>
+
+          {/* Email */}
+          <a
+            href={`mailto:?subject=${encodeURIComponent(post?.title)}&body=${encodeURIComponent(currentUrl)}`}
+            className="btn"
+            style={{ backgroundColor: "#333333", color: "white" }}
+          >
+            Email
+          </a>
+
+          {/* Copy Link */}
+          <button
+            className="btn"
+            style={{ backgroundColor: "var(--color-accent)", color: "white" }}
+            onClick={() => {
+              navigator.clipboard.writeText(currentUrl);
+              alert("Link copied to clipboard!");
+            }}
+          >
+            Copy Link
+          </button>
+        </div>
       </div>
     </>
   );
