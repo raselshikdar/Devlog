@@ -1,6 +1,7 @@
 import "../styles/globals.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer"; // Add this import
 
 import { Toaster } from "react-hot-toast";
 import ThemeProvider from "../lib/context/themeContext";
@@ -12,6 +13,7 @@ function MyApp({ Component, pageProps }) {
       <ThemeProvider>
         <Navbar />
         <Component {...pageProps} />
+        <Footer /> {/* Add Footer here */}
         <Toaster />
       </ThemeProvider>
     </UserProvider>
