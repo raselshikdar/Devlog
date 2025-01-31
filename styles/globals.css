@@ -32,28 +32,6 @@ body {
 
   background-color: var(--color-bg);
   color: var(--color-text);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-#__next {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding-top: 5rem; /* Height of your navbar */
-}
-
-main {
-  flex: 1;
-  padding: 0 10vw;
-  margin-top: 6rem;
-}
-
-@media only screen and (max-width: 768px) {
-  main {
-    padding: 0 5vw;
-  }
 }
 
 h1,
@@ -77,13 +55,23 @@ textarea {
   font-family: "Poppins", sans-serif;
 }
 
+main {
+  padding: 0 10vw;
+  margin-top: 6rem;
+}
+@media only screen and (max-width: 768px) {
+  main {
+    padding: 0 5vw;
+  }
+}
+
 h1 {
   font-size: 2rem;
 }
 h2 {
   font-size: 1.5rem;
 }
-h3 {
+h2 {
   font-size: 1.25rem;
 }
 
@@ -113,6 +101,7 @@ fieldset {
 }
 
 /* Buttons */
+
 .btn,
 button {
   background-color: var(--color-btn);
@@ -194,6 +183,7 @@ button.btn-logo {
 }
 
 /* Cards */
+
 .card {
   padding: 2rem;
   /* margin: 1rem 0; */
@@ -236,6 +226,7 @@ button.btn-logo {
 }
 
 /* Utilities */
+
 .push-left {
   margin-left: auto;
 }
@@ -284,6 +275,7 @@ button.btn-logo {
 }
 
 /* 404 */
+
 .notFound img {
   object-fit: contain;
 }
@@ -294,7 +286,6 @@ button.btn-logo {
 .notFound button {
   width: fit-content;
   align-self: center;
-
 }
 
 @media only screen and (max-width: 768px) {
@@ -304,6 +295,7 @@ button.btn-logo {
 }
 
 /*  confirm overlay */
+
 .confirm-overlay {
   background-color: var(--color-bg) !important;
   animation-duration: 0s !important;
@@ -322,21 +314,24 @@ button.btn-logo {
   cursor: pointer;
 }
 
-/* Footer */
-.footer {
-  background-color: #1dd1a1; /* Footer color */
-  border-top: 1px solid var(--color-border);
+/* Footer styles (added) */
+
+footer {
+  background-color: #1dd1a1;
+  color: var(--color-text);
+  padding: 2rem 0;
   text-align: center;
-  padding: 1rem 0;
-  font-size: 0.9rem;
-  color: var(--color-white); /* Text color for contrast */
 }
 
-.footer a {
-  color: var(--color-white);
-  font-weight: bold;
+footer p {
+  margin: 0;
 }
 
-.footer a:hover {
+footer a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+footer a:hover {
   text-decoration: underline;
 }
