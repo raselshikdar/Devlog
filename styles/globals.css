@@ -314,10 +314,10 @@ button.btn-logo {
   cursor: pointer;
 }
 
-/* Footer styles (added) */
+/* Footer styles (updated) */
 
 footer {
-  background-color: #1dd1a1;
+  background-color: var(--color-accent);
   color: var(--color-text);
   padding: 2rem 0;
   text-align: center;
