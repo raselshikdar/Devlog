@@ -4,6 +4,9 @@
   border-top: 1px solid var(--color-border);
   padding: 2rem 10vw;
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .footerContent {
@@ -31,7 +34,7 @@
   text-decoration: underline;
 }
 
-/* Copyright section - Full width & no space under */
+/* Copyright section */
 .copy {
   background-color: #111; /* Matte black */
   color: white;
@@ -40,8 +43,5 @@
   font-weight: normal;
   padding: 1rem 0;
   margin: 0;
-  width: 100vw; /* Full viewport width */
-  position: absolute;
-  left: 0;
-  bottom: 0;
+  width: 100%; /* Full width of parent */
 }
