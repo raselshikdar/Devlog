@@ -66,26 +66,6 @@ export default function PostContent({ post }) {
             Telegram
           </a>
 
-          {/* WhatsApp */}
-          <a
-            href={`https://wa.me/?text=${encodeURIComponent(post?.title + " " + currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#25D366", color: "white" }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            WhatsApp
-          </a>
-
-          {/* Email */}
-          <a
-            href={`mailto:?subject=${encodeURIComponent(post?.title)}&body=${encodeURIComponent(currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#333333", color: "white" }}
-          >
-            Email
-          </a>
-
           {/* Copy Link */}
           <button
             className="btn"
