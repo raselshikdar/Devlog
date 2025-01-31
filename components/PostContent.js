@@ -39,7 +39,7 @@ export default function PostContent({ post }) {
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
           {/* Facebook */}
           <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(postTitle)}`}
+            href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(postTitle)}&u=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -50,7 +50,7 @@ export default function PostContent({ post }) {
 
           {/* Twitter */}
           <a
-            href={`https://twitter.com/share?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(postTitle)}`}
+            href={`https://twitter.com/share?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -72,7 +72,7 @@ export default function PostContent({ post }) {
 
           {/* Telegram */}
           <a
-            href={`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(postTitle)}`}
+            href={`https://t.me/share/url?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
