@@ -32,11 +32,15 @@
 
 /* Updated copyright section */
 .copy {
-  background-color: black;
+  background-color: #111; /* Matte black */
   color: white;
   text-align: center;
   font-size: 0.9rem;
-  font-weight: bold;
+  font-weight: normal;
   padding: 1rem 0;
-  width: 100%;
+  margin: 0;
+  width: 100vw; /* Full viewport width */
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
