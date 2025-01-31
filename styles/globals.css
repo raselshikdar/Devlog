@@ -71,7 +71,7 @@ h1 {
 h2 {
   font-size: 1.5rem;
 }
-h2 {
+h3 {
   font-size: 1.25rem;
 }
 
@@ -294,7 +294,7 @@ button.btn-logo {
   }
 }
 
-/*  confirm overlay */
+/* Confirm overlay */
 
 .confirm-overlay {
   background-color: var(--color-bg) !important;
@@ -313,3 +313,56 @@ button.btn-logo {
   font-size: 1.6rem;
   cursor: pointer;
 }
+
+/* PostShare Card */
+.share-card {
+  padding: 1.5rem;
+  margin-top: 1rem;
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: center;
+}
+
+.share-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+.share-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.share-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--color-white);
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: 0.2s ease-in-out;
+}
+
+.share-button:hover {
+  opacity: 0.8;
+}
+
+/* Social Media Colors */
+.share-facebook { background-color: #1877f2; }
+.share-twitter { background-color: #1da1f2; }
+.share-telegram { background-color: #0088cc; }
+.share-whatsapp { background-color: #25d366; }
+.share-email { background-color: #ea4335; }
+.share-copy { background-color: var(--color-gray); color: var(--color-text); }
