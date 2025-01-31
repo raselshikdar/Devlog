@@ -29,8 +29,31 @@ body {
   padding: 0;
   margin: 0;
   font-family: "Poppins", sans-serif;
+
   background-color: var(--color-bg);
   color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#__next {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 5rem; /* Height of your navbar */
+}
+
+main {
+  flex: 1;
+  padding: 0 10vw;
+  margin-top: 6rem;
+}
+
+@media only screen and (max-width: 768px) {
+  main {
+    padding: 0 5vw;
+  }
 }
 
 h1,
@@ -52,16 +75,6 @@ input,
 button,
 textarea {
   font-family: "Poppins", sans-serif;
-}
-
-main {
-  padding: 0 10vw;
-  margin-top: 6rem;
-}
-@media only screen and (max-width: 768px) {
-  main {
-    padding: 0 5vw;
-  }
 }
 
 h1 {
@@ -108,6 +121,7 @@ button {
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
+  text-align: center;
   justify-content: center;
   text-decoration: none;
   font-weight: bold;
@@ -182,6 +196,7 @@ button.btn-logo {
 /* Cards */
 .card {
   padding: 2rem;
+  /* margin: 1rem 0; */
   background-color: var(--color-primary);
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -279,6 +294,7 @@ button.btn-logo {
 .notFound button {
   width: fit-content;
   align-self: center;
+
 }
 
 @media only screen and (max-width: 768px) {
@@ -287,25 +303,37 @@ button.btn-logo {
   }
 }
 
-/* Confirm overlay */
+/*  confirm overlay */
 .confirm-overlay {
   background-color: var(--color-bg) !important;
   animation-duration: 0s !important;
   animation-delay: 0s !important;
 }
 
+.hero {
+  position: relative;
+}
+
+.exit-hero {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
 /* Footer */
 .footer {
-  background-color: var(--color-primary);
+  background-color: #1dd1a1; /* Footer color */
   border-top: 1px solid var(--color-border);
   text-align: center;
   padding: 1rem 0;
   font-size: 0.9rem;
-  color: var(--color-text);
+  color: var(--color-white); /* Text color for contrast */
 }
 
 .footer a {
-  color: var(--color-blue);
+  color: var(--color-white);
   font-weight: bold;
 }
 
