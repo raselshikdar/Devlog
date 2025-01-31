@@ -2,6 +2,7 @@ import Link from "next/link";
 import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
+import { FaFacebook, FaTwitter, FaTelegram, FaCopy } from "react-icons/fa"; // Importing icons
 
 // UI component for main post content
 export default function PostContent({ post }) {
@@ -37,45 +38,45 @@ export default function PostContent({ post }) {
           <a
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
             className="btn"
-            style={{ backgroundColor: "#3b5998", color: "white" }}
+            style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1.2rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Facebook
+            <FaFacebook />
           </a>
 
           {/* Twitter */}
           <a
             href={`https://twitter.com/share?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(post?.title)}`}
             className="btn"
-            style={{ backgroundColor: "#1DA1F2", color: "white" }}
+            style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1.2rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Twitter
+            <FaTwitter />
           </a>
 
           {/* Telegram */}
           <a
             href={`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(post?.title)}`}
             className="btn"
-            style={{ backgroundColor: "#0088cc", color: "white" }}
+            style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1.2rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Telegram
+            <FaTelegram />
           </a>
 
           {/* Copy Link */}
           <button
             className="btn"
-            style={{ backgroundColor: "var(--color-accent)", color: "white" }}
+            style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1.2rem" }}
             onClick={() => {
               navigator.clipboard.writeText(currentUrl);
               alert("Link copied to clipboard!");
             }}
           >
-            Copy Link
+            <FaCopy />
           </button>
         </div>
       </div>
