@@ -2,7 +2,7 @@
   background-color: var(--color-primary);
   color: var(--color-text);
   border-top: 1px solid var(--color-border);
-  padding: 2rem 10vw;
+  padding: 2rem 10vw 0; /* Removed bottom padding */
   margin-top: auto;
 }
 
@@ -33,9 +33,9 @@
 .copy {
   background-color: #000; /* Matte black */
   color: #fff; /* White text */
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.25rem;
+  padding: 1rem;
   font-weight: bold;
-  display: inline-block;
-  opacity: 1;
+  text-align: center;
+  width: 100%;
+  margin-top: 1.5rem;
 }
