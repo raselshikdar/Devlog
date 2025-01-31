@@ -39,7 +39,7 @@
   font-weight: normal;
   padding: 1rem 0;
   margin: 0;
-  width: 100%; /* Full width of parent */
+  width: 100vw; /* Full viewport width */
   position: relative;
   left: 50%;
   transform: translateX(-50%);
