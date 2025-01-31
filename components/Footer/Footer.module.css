@@ -12,6 +12,7 @@
   text-align: center;
 }
 
+/* Footer Links */
 .links {
   display: flex;
   justify-content: center;
@@ -30,7 +31,7 @@
   text-decoration: underline;
 }
 
-/* Updated copyright section */
+/* Copyright section - Full width & no space under */
 .copy {
   background-color: #111; /* Matte black */
   color: white;
@@ -39,5 +40,8 @@
   font-weight: normal;
   padding: 1rem 0;
   margin: 0;
-  width: 100%; /* Full width */
+  width: 100vw; /* Full viewport width */
+  position: absolute;
+  left: 0;
+  bottom: 0;
 }
