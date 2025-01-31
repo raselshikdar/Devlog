@@ -3,56 +3,46 @@ const path = require('path');
 const { SitemapStream } = require('sitemap');
 require('dotenv').config();
 
-// Firestore imports
-const { collection, getDocs } = require('firebase/firestore');
-const { db } = require('./lib/firebase'); // Adjust the path
+// URLs to include in the sitemap
+const urls = [
+  { url: '/', changefreq: 'daily', priority: 1.0 }, // Homepage should be crawled frequently. (Correct)
 
-const staticLinks = [
-  { url: '/', changefreq: 'daily', priority: 1.0 },
-  { url: '/rasel/about-us', changefreq: 'yearly', priority: 0.5 },
-  { url: '/rasel/contact-us', changefreq: 'monthly', priority: 0.6 },
-  { url: '/rasel/sponsor-us', changefreq: 'monthly', priority: 0.7 },
-  { url: '/rasel/documentations', changefreq: 'weekly', priority: 0.8 },
-  { url: '/rasel/terms-of-use', changefreq: 'yearly', priority: 0.5 },
-  { url: '/rasel/privacy-policy', changefreq: 'yearly', priority: 0.5 },
-  { url: '/rasel/how-to-write-blog-posts-in-devlog', changefreq: 'monthly', priority: 0.7 },
-  { url: '/rasel/how-to-write-blog-posts-in-devlog-bangla-tutorial', changefreq: 'monthly', priority: 0.7 },
-  { url: '/rasel/new-feature-multi-language-supports-for-codes', changefreq: 'weekly', priority: 0.8 },
+{ url: '/rasel/about-us', changefreq: 'yearly', priority: 0.5 }, // About pages rarely change. (Correct)
+{ url: '/rasel/contact-us', changefreq: 'monthly', priority: 0.6 }, // Contact pages may change more often (e.g., contact info updates).
+{ url: '/rasel/sponsor-us', changefreq: 'monthly', priority: 0.7 }, // Sponsorship details may change more frequently than yearly.
+{ url: '/rasel/documentations', changefreq: 'weekly', priority: 0.8 }, // Documentation often receives updates, so weekly is better.
+{ url: '/rasel/terms-of-use', changefreq: 'yearly', priority: 0.5 }, // Legal pages change infrequently. (Correct)
+{ url: '/rasel/privacy-policy', changefreq: 'yearly', priority: 0.5 }, // Privacy policies are updated occasionally. (Correct)
+
+{ url: '/rasel/how-to-write-blog-posts-in-devlog', changefreq: 'monthly', priority: 0.7 }, // Correct
+{ url: '/rasel/how-to-write-blog-posts-in-devlog-bangla-tutorial', changefreq: 'monthly', priority: 0.7 }, // Correct
+{ url: '/rasel/new-feature-multi-language-supports-for-codes', changefreq: 'weekly', priority: 0.8 }, // New features may get updates. (Correct)
+
+{ url: '/wasik/this-is-an-awesome-blog', changefreq: 'monthly', priority: 0.6 } // Individual blog posts don’t need high priority. (Correct),
+  // Add other URLs here
 ];
 
-async function fetchDynamicUrlsFromFirestore() {
-  try {
-    const postsSnapshot = await getDocs(collection(db, 'posts'));
-    return postsSnapshot.docs.map(doc => ({
-      url: `/blog/${doc.id}`,
-      changefreq: 'monthly',
-      priority: 0.6,
-    }));
-  } catch (error) {
-    console.error('Error fetching dynamic URLs from Firestore:', error);
-    return [];
-  }
-}
+// Create a write stream to the sitemap.xml file in the public directory
+const writeStream = fs.createWriteStream(path.join(__dirname, 'public', 'sitemap.xml'));
 
-async function generateSitemap() {
-  try {
-    const SITE_URL = process.env.SITE_URL || 'https://devlog.rweb.site';
-    const dynamicLinks = await fetchDynamicUrlsFromFirestore();
-    const links = [...staticLinks, ...dynamicLinks];
+// Create the sitemap stream
+const sitemapStream = new SitemapStream({ hostname: process.env.SITE_URL || 'https://devlog.rweb.site' });
 
-    const sitemapPath = path.resolve(process.cwd(), 'public', 'sitemap.xml');
-    const writeStream = fs.createWriteStream(sitemapPath);
-    const sitemapStream = new SitemapStream({ hostname: SITE_URL });
+// Pipe the sitemap stream into the file
+sitemapStream.pipe(writeStream);
 
-    sitemapStream.pipe(writeStream);
-    links.forEach(url => sitemapStream.write(url));
-    sitemapStream.end();
+// Add each URL to the sitemap stream
+urls.forEach(url => {
+  sitemapStream.write(url);
+});
 
-    writeStream.on('finish', () => console.log(`Sitemap generated with ${links.length} URLs!`));
-    writeStream.on('error', err => console.error('Error writing sitemap:', err));
-  } catch (error) {
-    console.error('Error generating sitemap:', error);
-  }
-}
+// Close the stream
+sitemapStream.end();
 
-generateSitemap();
+writeStream.on('finish', () => {
+  console.log('Sitemap generated successfully!');
+});
+
+writeStream.on('error', (err) => {
+  console.error('Error writing sitemap:', err);
+});
