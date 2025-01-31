@@ -2,7 +2,7 @@
   background-color: var(--color-primary);
   color: var(--color-text);
   border-top: 1px solid var(--color-border);
-  padding: 2rem 10vw 0;
+  padding: 2rem 10vw;
   margin-top: auto;
 }
 
@@ -30,12 +30,13 @@
   text-decoration: underline;
 }
 
+/* Updated copyright section */
 .copy {
-  background-color: #000;
-  color: #fff;
-  padding: 1rem;
-  font-weight: bold;
+  background-color: black;
+  color: white;
   text-align: center;
-  width: 100vw; /* Ensures full width */
-  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 1rem 0;
+  width: 100%;
 }
