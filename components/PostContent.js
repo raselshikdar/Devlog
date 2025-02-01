@@ -19,21 +19,39 @@ export default function PostContent({ post }) {
 
   const postTitle = post?.title;
 
-  // Extract TOC from Markdown content
+  // Extract TOC from Markdown content and assign unique IDs to headings
   useEffect(() => {
     if (post?.content) {
       const headings = post.content.match(/^#{2,4} .+/gm); // Matches ##, ###, #### headings
       if (headings) {
+        let idMap = {};
         const toc = headings.map((heading) => {
           const level = heading.split(" ")[0].length; // Count the number of #
-          const text = heading.replace(/^#{2,4} /, "").trim(); // Remove ##
-          const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-"); // Create an ID
+          let text = heading.replace(/^#{2,4} /, "").trim(); // Remove ##
+          let id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-"); // Create an ID
+
+          // Ensure unique IDs
+          if (idMap[id]) {
+            idMap[id] += 1;
+            id = `${id}-${idMap[id]}`;
+          } else {
+            idMap[id] = 1;
+          }
+
           return { level, text, id };
         });
         setTableOfContents(toc);
       }
     }
   }, [post?.content]);
+
+  // Function to modify Markdown content and add IDs to headings
+  const processMarkdown = (content) => {
+    return content.replace(/^#{2,4} (.+)$/gm, (match, p1) => {
+      const id = p1.toLowerCase().replace(/[^a-z0-9]+/g, "-"); // Generate ID
+      return `<h2 id="${id}">${p1}</h2>`; // Add ID to heading
+    });
+  };
 
   return (
     <>
@@ -47,8 +65,8 @@ export default function PostContent({ post }) {
           on {createdAt}
         </span>
 
-        {/* Horizontal Line */}
-        <hr />
+        {/* Green 2px Horizontal Line */}
+        <hr style={{ border: "2px solid green", margin: "1rem 0" }} />
 
         {/* Table of Contents */}
         {tableOfContents.length > 0 && (
@@ -57,15 +75,20 @@ export default function PostContent({ post }) {
             <ul>
               {tableOfContents.map((item, index) => (
                 <li key={index} style={{ marginLeft: (item.level - 2) * 10 }}>
-                  <a href={`#${item.id}`}>{item.text}</a>
+                  <a href={`#${item.id}`} onClick={(e) => { 
+                    e.preventDefault(); 
+                    document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" });
+                  }}>
+                    {item.text}
+                  </a>
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Blog Content */}
-        <MarkdownPreview content={post?.content} />
+        {/* Blog Content with Modified Markdown (with heading IDs) */}
+        <MarkdownPreview content={processMarkdown(post?.content)} />
       </div>
 
       <div className="card">
