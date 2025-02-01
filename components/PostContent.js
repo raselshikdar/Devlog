@@ -32,8 +32,8 @@ export default function PostContent({ post }) {
           on {createdAt}
         </span>
 
-        {/* Horizontal Line (2px, #1dd1a1) */}
-        <hr style={{ border: "2px solid #1dd1a1", margin: "1rem 0" }} />
+        {/* Adjusted Horizontal Line (No space before, same space after) */}
+        <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
 
         <MarkdownPreview content={post?.content} />
       </div>
