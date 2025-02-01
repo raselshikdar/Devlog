@@ -67,7 +67,7 @@ export default function PostContent({ post }) {
 
           {/* Twitter */}
           <a
-            href={`https://x.com/intent/tweet?url=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
+            href={`https://x.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
