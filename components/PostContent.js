@@ -8,12 +8,25 @@ import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-ico
 export default function PostContent({ post }) {
   let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   const [currentUrl, setCurrentUrl] = useState("");
+  const [postTags, setPostTags] = useState("{Uncategorized}");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
     }
-  }, []);
+
+    // Extract tags from post content
+    const tagMatch = post?.content.match(/Tags:\s*([\w\s,]+)/i);
+    if (tagMatch) {
+      const tags = tagMatch[1]
+        .split(",") // Split by comma
+        .map(tag => tag.trim()) // Remove extra spaces
+        .filter(tag => tag); // Remove empty values
+      if (tags.length > 0) {
+        setPostTags(`{${tags.slice(0, 2).join(", ")}}`); // Take first 1 or 2 tags
+      }
+    }
+  }, [post]);
 
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a");
 
@@ -29,10 +42,10 @@ export default function PostContent({ post }) {
           <Link href={`/${post.username}/`}>
             <a className="text-info">@{post.username}</a>
           </Link>{" "}
-          on {createdAt}
+          on {createdAt} {postTags}
         </span>
 
-        {/* Adjusted Horizontal Line (No space before, same space after) */}
+        {/* Adjusted Horizontal Line */}
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
 
         <MarkdownPreview content={post?.content} />
