@@ -2,12 +2,12 @@ import Link from "next/link";
 import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
-import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; // Importing WhatsApp icon
 
+// UI component for main post content
 export default function PostContent({ post }) {
   let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   const [currentUrl, setCurrentUrl] = useState("");
-  const [tableOfContents, setTableOfContents] = useState([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -17,41 +17,8 @@ export default function PostContent({ post }) {
 
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a");
 
+  // Title of the post
   const postTitle = post?.title;
-
-  // Extract TOC from Markdown content and assign unique IDs to headings
-  useEffect(() => {
-    if (post?.content) {
-      const headings = post.content.match(/^#{2,4} .+/gm); // Matches ##, ###, #### headings
-      if (headings) {
-        let idMap = {};
-        const toc = headings.map((heading) => {
-          const level = heading.split(" ")[0].length; // Count the number of #
-          let text = heading.replace(/^#{2,4} /, "").trim(); // Remove ##
-          let id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-"); // Create an ID
-
-          // Ensure unique IDs
-          if (idMap[id]) {
-            idMap[id] += 1;
-            id = `${id}-${idMap[id]}`;
-          } else {
-            idMap[id] = 1;
-          }
-
-          return { level, text, id };
-        });
-        setTableOfContents(toc);
-      }
-    }
-  }, [post?.content]);
-
-  // Function to modify Markdown content and add IDs to headings
-  const processMarkdown = (content) => {
-    return content.replace(/^#{2,4} (.+)$/gm, (match, p1) => {
-      const id = p1.toLowerCase().replace(/[^a-z0-9]+/g, "-"); // Generate ID
-      return `<h2 id="${id}">${p1}</h2>`; // Add ID to heading
-    });
-  };
 
   return (
     <>
@@ -65,30 +32,10 @@ export default function PostContent({ post }) {
           on {createdAt}
         </span>
 
-        {/* Green 2px Horizontal Line */}
-        <hr style={{ border: "2px solid green", margin: "1rem 0" }} />
+        {/* Horizontal Line (2px, #1dd1a1) */}
+        <hr style={{ border: "2px solid #1dd1a1", margin: "1rem 0" }} />
 
-        {/* Table of Contents */}
-        {tableOfContents.length > 0 && (
-          <div className="table-of-contents card">
-            <h3>Table of Contents</h3>
-            <ul>
-              {tableOfContents.map((item, index) => (
-                <li key={index} style={{ marginLeft: (item.level - 2) * 10 }}>
-                  <a href={`#${item.id}`} onClick={(e) => { 
-                    e.preventDefault(); 
-                    document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" });
-                  }}>
-                    {item.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Blog Content with Modified Markdown (with heading IDs) */}
-        <MarkdownPreview content={processMarkdown(post?.content)} />
+        <MarkdownPreview content={post?.content} />
       </div>
 
       <div className="card">
