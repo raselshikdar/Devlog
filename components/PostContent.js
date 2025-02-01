@@ -28,7 +28,7 @@ export default function PostContent({ post }) {
     }
   }, [post]);
 
-  createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a");
+  createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a",);
 
   // Title of the post
   const postTitle = post?.title;
