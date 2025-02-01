@@ -2,12 +2,12 @@ import Link from "next/link";
 import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
-import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; // Importing WhatsApp icon
+import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 
-// UI component for main post content
 export default function PostContent({ post }) {
   let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   const [currentUrl, setCurrentUrl] = useState("");
+  const [tableOfContents, setTableOfContents] = useState([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -17,8 +17,23 @@ export default function PostContent({ post }) {
 
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a");
 
-  // Title of the post
   const postTitle = post?.title;
+
+  // Extract TOC from Markdown content
+  useEffect(() => {
+    if (post?.content) {
+      const headings = post.content.match(/^#{2,4} .+/gm); // Matches ##, ###, #### headings
+      if (headings) {
+        const toc = headings.map((heading) => {
+          const level = heading.split(" ")[0].length; // Count the number of #
+          const text = heading.replace(/^#{2,4} /, "").trim(); // Remove ##
+          const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-"); // Create an ID
+          return { level, text, id };
+        });
+        setTableOfContents(toc);
+      }
+    }
+  }, [post?.content]);
 
   return (
     <>
@@ -31,6 +46,25 @@ export default function PostContent({ post }) {
           </Link>{" "}
           on {createdAt}
         </span>
+
+        {/* Horizontal Line */}
+        <hr />
+
+        {/* Table of Contents */}
+        {tableOfContents.length > 0 && (
+          <div className="table-of-contents card">
+            <h3>Table of Contents</h3>
+            <ul>
+              {tableOfContents.map((item, index) => (
+                <li key={index} style={{ marginLeft: (item.level - 2) * 10 }}>
+                  <a href={`#${item.id}`}>{item.text}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Blog Content */}
         <MarkdownPreview content={post?.content} />
       </div>
 
