@@ -18,7 +18,8 @@ const urls = [
 { url: '/rasel/how-to-write-blog-posts-in-devlog-bangla-tutorial', changefreq: 'monthly', priority: 0.7 }, // Correct
 { url: '/rasel/new-feature-multi-language-supports-for-codes', changefreq: 'weekly', priority: 0.8 }, // New features may get updates. (Correct)
 
-{ url: '/wasik/this-is-an-awesome-blog', changefreq: 'monthly', priority: 0.6 } // Individual blog posts don’t need high priority. (Correct),
+{ url: '/wasik/this-is-an-awesome-blog', changefreq: 'monthly', priority: 0.6 }, // Individual blog posts don’t need high priority. (Correct),
+{ url: '/rasel/how-to-write-complete-blog-article-using-markdown', changefreq: 'monthly', priority: 0.7 },
   // Add other URLs here
 ];
 
