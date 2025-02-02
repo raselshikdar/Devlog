@@ -41,7 +41,7 @@ export default function PostContent({ post }) {
         <span className="text-sm">
           Written by{" "}
           <Link href={`/${post.username}/`}>
-            <a className="text-info">
+            <a className="text-info" style={{ display: 'inline-flex', alignItems: 'center' }}>
               @{post.username}
               {post.username === "rasel" && (
                 <FaCheckCircle
