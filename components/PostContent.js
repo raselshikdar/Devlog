@@ -131,7 +131,11 @@ export default function PostContent({ post }) {
         @media (max-width: 767px) {
           .verified-icon {
             font-size: 12px; /* Smaller icon size for mobile */
-            margin-left: 3px; /* Reduced margin to fit better */
+            margin-left: 5px; /* Slightly larger margin for readability */
+          }
+          
+          a.text-info {
+            font-size: 16px; /* Ensure the username is the right size on mobile */
           }
         }
       `}</style>
