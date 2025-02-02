@@ -4,24 +4,20 @@ import format from "date-fns/format";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 
-// UI component for main post content
 export default function PostContent({ post }) {
   let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
     }
 
-    // Extract tags from post content
     const tagMatch = post?.content.match(/Tags:\s*([\w\s,]+)/i);
     if (tagMatch) {
-      const tags = tagMatch[1]
-        .split(",")
-        .map(tag => tag.trim())
-        .filter(tag => tag);
+      const tags = tagMatch[1].split(",").map(tag => tag.trim()).filter(tag => tag);
       if (tags.length > 0) {
         setPostTags(`{${tags.slice(0, 2).join(", ")}}`);
       }
@@ -29,9 +25,14 @@ export default function PostContent({ post }) {
   }, [post]);
 
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a,");
-
-  // Title of the post
   const postTitle = post?.title;
+
+  // Copy Link to Clipboard
+  const handleCopy = () => {
+    navigator.clipboard.writeText(postTitle + " " + currentUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <>
@@ -39,81 +40,87 @@ export default function PostContent({ post }) {
         <h1>{post?.title}</h1>
         <span className="text-sm">
           Written by{" "}
-          <Link href={`/${post.username}/`}>
-            <a className="text-info">@{post.username}</a>
-          </Link>{" "}
+          <Link href={`/${post.username}/`} className="text-info">@{post.username}</Link>{" "}
           on {createdAt} {postTags}
         </span>
-
-        {/* Adjusted Horizontal Line */}
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
-
         <MarkdownPreview content={post?.content} />
       </div>
 
-      {/* Post Sharing Section */}
+      {/* Share Section */}
       <div className="card">
         <h3>Share This Post</h3>
-        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-          {/* Facebook */}
+        <div className="share-buttons">
           <a
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(postTitle)}&u=${encodeURIComponent(currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            className="btn fb"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaFacebook size={16} />
+            <FaFacebook size={18} /> Facebook
           </a>
 
-          {/* Twitter */}
           <a
             href={`https://x.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            className="btn twitter"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaTwitter size={16} />
+            <FaTwitter size={18} /> Twitter
           </a>
 
-          {/* WhatsApp */}
           <a
             href={`https://wa.me/?text=${encodeURIComponent(postTitle + " " + currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#25D366", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            className="btn whatsapp"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaWhatsapp size={16} />
+            <FaWhatsapp size={18} /> WhatsApp
           </a>
 
-          {/* Telegram */}
           <a
             href={`https://t.me/share/url?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            className="btn telegram"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaTelegram size={16} />
+            <FaTelegram size={18} /> Telegram
           </a>
 
-          {/* Copy Link */}
-          <button
-            className="btn"
-            style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
-            onClick={() => {
-              if (navigator.clipboard) {
-                navigator.clipboard.writeText(postTitle + " " + currentUrl);
-                alert("Link copied to clipboard!");
-              }
-            }}
-          >
-            <FaCopy size={16} />
+          <button className="btn copy" onClick={handleCopy}>
+            <FaCopy size={18} /> {copied ? "Copied!" : "Copy Link"}
           </button>
         </div>
       </div>
+
+      {/* Styles */}
+      <style jsx>{`
+        .share-buttons {
+          display: flex;
+          gap: 0.6rem;
+          flex-wrap: wrap;
+        }
+        .btn {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          padding: 0.6rem 1.2rem;
+          border-radius: 6px;
+          color: white;
+          font-size: 1rem;
+          transition: 0.3s ease;
+          cursor: pointer;
+          text-decoration: none;
+        }
+        .fb { background-color: #3b5998; }
+        .twitter { background-color: #1DA1F2; }
+        .whatsapp { background-color: #25D366; }
+        .telegram { background-color: #0088cc; }
+        .copy { background-color: var(--color-accent); }
+        .btn:hover {
+          opacity: 0.8;
+        }
+      `}</style>
     </>
   );
 }
