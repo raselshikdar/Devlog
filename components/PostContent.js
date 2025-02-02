@@ -2,37 +2,36 @@ import Link from "next/link";
 import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
-import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; // Importing WhatsApp icon
 
+// UI component for main post content
 export default function PostContent({ post }) {
   let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
     }
 
+    // Extract tags from post content
     const tagMatch = post?.content.match(/Tags:\s*([\w\s,]+)/i);
     if (tagMatch) {
-      const tags = tagMatch[1].split(",").map(tag => tag.trim()).filter(tag => tag);
+      const tags = tagMatch[1]
+        .split(",") // Split by comma
+        .map(tag => tag.trim()) // Remove extra spaces
+        .filter(tag => tag); // Remove empty values
       if (tags.length > 0) {
-        setPostTags(`{${tags.slice(0, 2).join(", ")}}`);
+        setPostTags(`{${tags.slice(0, 2).join(", ")}}`); // Take first 1 or 2 tags
       }
     }
   }, [post]);
 
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a,");
-  const postTitle = post?.title;
 
-  // Copy Link to Clipboard
-  const handleCopy = () => {
-    navigator.clipboard.writeText(postTitle + " " + currentUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  // Title of the post
+  const postTitle = post?.title;
 
   return (
     <>
@@ -40,87 +39,78 @@ export default function PostContent({ post }) {
         <h1>{post?.title}</h1>
         <span className="text-sm">
           Written by{" "}
-          <Link href={`/${post.username}/`} className="text-info">@{post.username}</Link>{" "}
+          <Link href={`/${post.username}/`}>
+            <a className="text-info">@{post.username}</a>
+          </Link>{" "}
           on {createdAt} {postTags}
         </span>
+
+        {/* Adjusted Horizontal Line */}
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
+
         <MarkdownPreview content={post?.content} />
       </div>
 
-      {/* Share Section */}
       <div className="card">
         <h3>Share This Post</h3>
-        <div className="share-buttons">
+        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+          {/* Facebook */}
           <a
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(postTitle)}&u=${encodeURIComponent(currentUrl)}`}
-            className="btn fb"
+            className="btn"
+            style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaFacebook size={18} /> Facebook
+            <FaFacebook size={16} />
           </a>
 
+          {/* Twitter */}
           <a
             href={`https://x.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
-            className="btn twitter"
+            className="btn"
+            style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaTwitter size={18} /> Twitter
+            <FaTwitter size={16} />
           </a>
 
+          {/* WhatsApp */}
           <a
             href={`https://wa.me/?text=${encodeURIComponent(postTitle + " " + currentUrl)}`}
-            className="btn whatsapp"
+            className="btn"
+            style={{ backgroundColor: "#25D366", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaWhatsapp size={18} /> WhatsApp
+            <FaWhatsapp size={16} />
           </a>
 
+          {/* Telegram */}
           <a
             href={`https://t.me/share/url?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
-            className="btn telegram"
+            className="btn"
+            style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaTelegram size={18} /> Telegram
+            <FaTelegram size={16} />
           </a>
 
-          <button className="btn copy" onClick={handleCopy}>
-            <FaCopy size={18} /> {copied ? "Copied!" : "Copy Link"}
+          {/* Copy Link */}
+          <button
+            className="btn"
+            style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            onClick={() => {
+              navigator.clipboard.writeText(postTitle + " " + currentUrl);
+              alert("Link copied to clipboard!");
+            }}
+          >
+            <FaCopy size={16} />
           </button>
         </div>
       </div>
-
-      {/* Styles */}
-      <style jsx>{`
-        .share-buttons {
-          display: flex;
-          gap: 0.6rem;
-          flex-wrap: wrap;
-        }
-        .btn {
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-          padding: 0.6rem 1.2rem;
-          border-radius: 6px;
-          color: white;
-          font-size: 1rem;
-          transition: 0.3s ease;
-          cursor: pointer;
-          text-decoration: none;
-        }
-        .fb { background-color: #3b5998; }
-        .twitter { background-color: #1DA1F2; }
-        .whatsapp { background-color: #25D366; }
-        .telegram { background-color: #0088cc; }
-        .copy { background-color: var(--color-accent); }
-        .btn:hover {
-          opacity: 0.8;
-        }
-      `}</style>
     </>
   );
 }
