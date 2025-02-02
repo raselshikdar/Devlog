@@ -127,10 +127,11 @@ export default function PostContent({ post }) {
           margin-left: 5px; /* Space between username and icon */
         }
 
-        /* Mobile view: Smaller icon size */
+        /* Mobile view: Smaller icon size and adjusted spacing */
         @media (max-width: 767px) {
           .verified-icon {
             font-size: 12px; /* Smaller icon size for mobile */
+            margin-left: 3px; /* Reduced margin to fit better */
           }
         }
       `}</style>
