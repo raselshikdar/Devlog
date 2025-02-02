@@ -42,25 +42,23 @@ export default function PostContent({ post }) {
           <Link href={`/${post.username}/`}>
             <a className="text-info">@{post.username}</a>
           </Link>{" "}
+          {post.username === "rasel" && (
+            <span
+              style={{
+                backgroundColor: "#007bff",
+                color: "white",
+                fontSize: "0.75rem",
+                padding: "0.2rem 0.5rem",
+                borderRadius: "15px",
+                marginLeft: "0.5rem",
+                verticalAlign: "middle",
+              }}
+            >
+              Verified
+            </span>
+          )}
           on {createdAt} {postTags}
         </span>
-
-        {/* Conditional Verification Button for @rasel */}
-        {post.username === "rasel" && (
-          <button
-            style={{
-              backgroundColor: "#007bff",
-              color: "white",
-              padding: "0.4rem 1rem",
-              fontSize: "0.9rem",
-              borderRadius: "5px",
-              marginTop: "0.5rem",
-              display: "inline-block",
-            }}
-          >
-            Verified
-          </button>
-        )}
 
         {/* Adjusted Horizontal Line */}
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
