@@ -4,11 +4,11 @@ import format from "date-fns/format";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 
+// UI component for main post content
 export default function PostContent({ post }) {
   let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
-  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -29,22 +29,9 @@ export default function PostContent({ post }) {
   }, [post]);
 
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a,");
+
+  // Title of the post
   const postTitle = post?.title;
-  const twitterHashtags = "Devlog,Programming"; // Change as needed
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(`${postTitle} ${currentUrl}`);
-    setCopySuccess(true);
-    setTimeout(() => setCopySuccess(false), 2000);
-  };
-
-  const handleWebShare = () => {
-    if (navigator.share) {
-      navigator
-        .share({ title: postTitle, url: currentUrl })
-        .catch(error => console.error("Error sharing:", error));
-    }
-  };
 
   return (
     <>
@@ -58,14 +45,17 @@ export default function PostContent({ post }) {
           on {createdAt} {postTags}
         </span>
 
+        {/* Adjusted Horizontal Line */}
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
 
         <MarkdownPreview content={post?.content} />
       </div>
 
+      {/* Post Sharing Section */}
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+          {/* Facebook */}
           <a
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(postTitle)}&u=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -76,8 +66,9 @@ export default function PostContent({ post }) {
             <FaFacebook size={16} />
           </a>
 
+          {/* Twitter */}
           <a
-            href={`https://x.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}&hashtags=${twitterHashtags}`}
+            href={`https://x.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -86,6 +77,7 @@ export default function PostContent({ post }) {
             <FaTwitter size={16} />
           </a>
 
+          {/* WhatsApp */}
           <a
             href={`https://wa.me/?text=${encodeURIComponent(postTitle + " " + currentUrl)}`}
             className="btn"
@@ -96,6 +88,7 @@ export default function PostContent({ post }) {
             <FaWhatsapp size={16} />
           </a>
 
+          {/* Telegram */}
           <a
             href={`https://t.me/share/url?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -106,23 +99,19 @@ export default function PostContent({ post }) {
             <FaTelegram size={16} />
           </a>
 
+          {/* Copy Link */}
           <button
             className="btn"
             style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
-            onClick={handleCopy}
+            onClick={() => {
+              if (navigator.clipboard) {
+                navigator.clipboard.writeText(postTitle + " " + currentUrl);
+                alert("Link copied to clipboard!");
+              }
+            }}
           >
-            <FaCopy size={16} /> {copySuccess ? "Copied!" : "Copy"}
+            <FaCopy size={16} />
           </button>
-
-          {navigator.share && (
-            <button
-              className="btn"
-              style={{ backgroundColor: "#FF5733", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
-              onClick={handleWebShare}
-            >
-              Share
-            </button>
-          )}
         </div>
       </div>
     </>
