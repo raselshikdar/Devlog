@@ -46,10 +46,7 @@ export default function PostContent({ post }) {
               {post.username === "rasel" && (
                 <FaCheckCircle
                   size={14}
-                  style={{
-                    color: "#1da1f2", // Facebook/Twitter style blue color
-                    marginLeft: "5px", // Space between username and icon
-                  }}
+                  className="verified-icon" // Adding a class for mobile styling
                 />
               )}
             </a>
@@ -123,6 +120,20 @@ export default function PostContent({ post }) {
           </button>
         </div>
       </div>
+
+      <style jsx>{`
+        .verified-icon {
+          color: #1da1f2; /* Twitter Blue */
+          margin-left: 5px; /* Space between username and icon */
+        }
+
+        /* Mobile view: Smaller icon size */
+        @media (max-width: 767px) {
+          .verified-icon {
+            font-size: 12px; /* Smaller icon size for mobile */
+          }
+        }
+      `}</style>
     </>
   );
 }
