@@ -3,6 +3,7 @@ import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; // Importing WhatsApp icon
+import { FaCheckCircle } from "react-icons/fa"; // Importing the checkmark icon for verified badge
 
 // UI component for main post content
 export default function PostContent({ post }) {
@@ -40,23 +41,19 @@ export default function PostContent({ post }) {
         <span className="text-sm">
           Written by{" "}
           <Link href={`/${post.username}/`}>
-            <a className="text-info">@{post.username}</a>
+            <a className="text-info">
+              @{post.username}
+              {post.username === "rasel" && (
+                <FaCheckCircle
+                  size={14}
+                  style={{
+                    color: "#1da1f2", // Facebook/Twitter style blue color
+                    marginLeft: "5px", // Space between username and icon
+                  }}
+                />
+              )}
+            </a>
           </Link>{" "}
-          {post.username === "rasel" && (
-            <span
-              style={{
-                backgroundColor: "#007bff",
-                color: "white",
-                fontSize: "0.75rem",
-                padding: "0.2rem 0.5rem",
-                borderRadius: "15px",
-                marginLeft: "0.5rem",
-                verticalAlign: "middle",
-              }}
-            >
-              Verified
-            </span>
-          )}
           on {createdAt} {postTags}
         </span>
 
