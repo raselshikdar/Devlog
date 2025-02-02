@@ -2,13 +2,13 @@ import Link from "next/link";
 import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
-import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; 
+import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; // Importing WhatsApp icon
 
 // UI component for main post content
 export default function PostContent({ post }) {
+  let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
-  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -26,17 +26,12 @@ export default function PostContent({ post }) {
         setPostTags(`{${tags.slice(0, 2).join(", ")}}`); // Take first 1 or 2 tags
       }
     }
-
-    setLoading(false); // Set loading to false once data is ready
   }, [post]);
 
-  let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a,");
-  const postTitle = post?.title;
 
-  if (loading) {
-    return <div>Loading...</div>; // Display loading state
-  }
+  // Title of the post
+  const postTitle = post?.title;
 
   return (
     <>
@@ -49,6 +44,23 @@ export default function PostContent({ post }) {
           </Link>{" "}
           on {createdAt} {postTags}
         </span>
+
+        {/* Conditional Verification Button for @rasel */}
+        {post.username === "rasel" && (
+          <button
+            style={{
+              backgroundColor: "#007bff",
+              color: "white",
+              padding: "0.4rem 1rem",
+              fontSize: "0.9rem",
+              borderRadius: "5px",
+              marginTop: "0.5rem",
+              display: "inline-block",
+            }}
+          >
+            Verified
+          </button>
+        )}
 
         {/* Adjusted Horizontal Line */}
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
@@ -66,7 +78,6 @@ export default function PostContent({ post }) {
             style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Share on Facebook"
           >
             <FaFacebook size={16} />
           </a>
@@ -78,7 +89,6 @@ export default function PostContent({ post }) {
             style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Share on Twitter"
           >
             <FaTwitter size={16} />
           </a>
@@ -90,7 +100,6 @@ export default function PostContent({ post }) {
             style={{ backgroundColor: "#25D366", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Share on WhatsApp"
           >
             <FaWhatsapp size={16} />
           </a>
@@ -102,7 +111,6 @@ export default function PostContent({ post }) {
             style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Share on Telegram"
           >
             <FaTelegram size={16} />
           </a>
@@ -115,7 +123,6 @@ export default function PostContent({ post }) {
               navigator.clipboard.writeText(postTitle + " " + currentUrl);
               alert("Link copied to clipboard!");
             }}
-            aria-label="Copy post link"
           >
             <FaCopy size={16} />
           </button>
