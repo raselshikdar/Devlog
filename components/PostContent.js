@@ -2,11 +2,10 @@ import Link from "next/link";
 import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
-import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; // Importing WhatsApp icon
+import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 
 // UI component for main post content
 export default function PostContent({ post }) {
-  let createdAt = typeof post?.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate();
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
 
@@ -15,28 +14,23 @@ export default function PostContent({ post }) {
       setCurrentUrl(window.location.href);
     }
 
-    // Extract tags from post content
     const tagMatch = post?.content.match(/Tags:\s*([\w\s,]+)/i);
     if (tagMatch) {
       const tags = tagMatch[1]
-        .split(",") // Split by comma
-        .map(tag => tag.trim()) // Remove extra spaces
-        .filter(tag => tag); // Remove empty values
-      if (tags.length > 0) {
-        setPostTags(`{${tags.slice(0, 2).join(", ")}}`); // Take first 1 or 2 tags
-      }
+        .split(",")
+        .map(tag => tag.trim())
+        .filter(tag => tag);
+      setPostTags(`{${tags.slice(0, 2).join(", ")}}`);
     }
   }, [post]);
 
-  createdAt = format(createdAt, "eeee MMM dd, yyyy - h:mm a,");
-
-  // Title of the post
-  const postTitle = post?.title;
+  const createdAt = post?.createdAt ? format(new Date(post.createdAt), "eeee MMM dd, yyyy - h:mm a,") : "";
+  const postTitle = post?.title || "Untitled Post";
 
   return (
     <>
       <div className="card">
-        <h1>{post?.title}</h1>
+        <h1>{postTitle}</h1>
         <span className="text-sm">
           Written by{" "}
           <Link href={`/${post.username}/`}>
@@ -44,61 +38,37 @@ export default function PostContent({ post }) {
           </Link>{" "}
           on {createdAt} {postTags}
         </span>
-
-        {/* Adjusted Horizontal Line */}
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
-
         <MarkdownPreview content={post?.content} />
       </div>
 
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-          {/* Facebook */}
-          <a
+          <SocialShareButton
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(postTitle)}&u=${encodeURIComponent(currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaFacebook size={16} />
-          </a>
-
-          {/* Twitter */}
-          <a
+            style="facebook-btn"
+            Icon={FaFacebook}
+            label="Facebook"
+          />
+          <SocialShareButton
             href={`https://x.com/intent/tweet?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaTwitter size={16} />
-          </a>
-
-          {/* WhatsApp */}
-          <a
+            style="twitter-btn"
+            Icon={FaTwitter}
+            label="Twitter"
+          />
+          <SocialShareButton
             href={`https://wa.me/?text=${encodeURIComponent(postTitle + " " + currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#25D366", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaWhatsapp size={16} />
-          </a>
-
-          {/* Telegram */}
-          <a
+            style="whatsapp-btn"
+            Icon={FaWhatsapp}
+            label="WhatsApp"
+          />
+          <SocialShareButton
             href={`https://t.me/share/url?text=${encodeURIComponent(postTitle)}&url=${encodeURIComponent(currentUrl)}`}
-            className="btn"
-            style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaTelegram size={16} />
-          </a>
-
-          {/* Copy Link */}
+            style="telegram-btn"
+            Icon={FaTelegram}
+            label="Telegram"
+          />
           <button
             className="btn"
             style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
@@ -114,3 +84,9 @@ export default function PostContent({ post }) {
     </>
   );
 }
+
+const SocialShareButton = ({ href, style, Icon, label }) => (
+  <a href={href} className={`btn ${style}`} target="_blank" rel="noopener noreferrer">
+    <Icon size={16} />
+  </a>
+);
