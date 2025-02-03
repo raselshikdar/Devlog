@@ -1,32 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-const ReadingProgressBar = () => {
+export default function ReadingProgressBar() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const updateProgress = () => {
-    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = (window.scrollY / totalHeight) * 100;
-    setScrollProgress(progress);
-  };
-
   useEffect(() => {
-    window.addEventListener('scroll', updateProgress);
-    return () => window.removeEventListener('scroll', updateProgress);
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener("scroll", updateProgress);
+
+    return () => window.removeEventListener("scroll", updateProgress);
   }, []);
 
   return (
     <div
       style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
         width: `${scrollProgress}%`,
-        height: '5px',
-        backgroundColor: '#4CAF50', // You can change the color here
-        zIndex: 1000,
+        height: "5px", // Adjust the height for the bar
+        backgroundColor: "#1dd1a1", // The progress bar color
+        position: "fixed",
+        top: "60px", // Adjust to position below the navbar
+        left: "0",
+        zIndex: "9999", // Make sure it's above content
+        transition: "width 0.2s ease-out",
       }}
     ></div>
   );
-};
-
-export default ReadingProgressBar;
+}
