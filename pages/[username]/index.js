@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
 import { getUserWithUsername, postToJSON } from "../../lib/firebase";
 import UserProfile from "../../components/UserProfile";
 import Metatags from "../../components/Metatags";
 import PostFeed from "../../components/PostFeed";
-import { db } from "../../lib/firebase";
-import { getDocs, query, collection, where, orderBy, limit, startAfter, doc } from "firebase/firestore";
-
-// Max posts per page
-const LIMIT = 5;
+import {
+  getDocs,
+  query as firebaseQuery,
+  collection,
+  where,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 
 export async function getServerSideProps({ query }) {
   const { username } = query;
@@ -21,16 +23,17 @@ export async function getServerSideProps({ query }) {
     };
   }
 
+  // JSON serializable data
   let user = null;
   let posts = null;
 
   if (userDoc) {
     user = userDoc.data();
-    const postsQuery = query(
+    const postsQuery = firebaseQuery(
       collection(userDoc.ref, "posts"),
       where("published", "==", true),
       orderBy("createdAt", "desc"),
-      limit(LIMIT)
+      limit(20)
     );
 
     posts = (await getDocs(postsQuery)).docs.map(postToJSON);
@@ -42,51 +45,14 @@ export async function getServerSideProps({ query }) {
 }
 
 export default function UserProfilePage({ user, posts }) {
-  const [allPosts, setAllPosts] = useState(posts);
-  const [loading, setLoading] = useState(false);
-  const [postsEnd, setPostsEnd] = useState(false);
-  const [lastVisible, setLastVisible] = useState(null); // Track the last document for pagination
-
-  // Function to fetch more posts
-  const getMorePosts = async () => {
-    setLoading(true);
-
-    // Set cursor based on last post
-    const postsQuery = query(
-      collection(db, "users", user.uid, "posts"),
-      where("published", "==", true),
-      orderBy("createdAt", "desc"),
-      startAfter(lastVisible), // Start after the last post
-      limit(LIMIT)
-    );
-
-    const snapshot = await getDocs(postsQuery);
-    const newPosts = snapshot.docs.map(postToJSON);
-    const lastVisiblePost = snapshot.docs[snapshot.docs.length - 1];
-
-    setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
-    setLastVisible(lastVisiblePost); // Update the last visible document
-    setLoading(false);
-
-    // If there are fewer posts than LIMIT, we have reached the end
-    if (newPosts.length < LIMIT) {
-      setPostsEnd(true);
-    }
-  };
-
   return (
     <main>
-      <Metatags title={user.username} description={`${user.username}'s public profile`} />
+      <Metatags
+        title={user.username}
+        description={`${user.username}'s public profile`}
+      />
       <UserProfile user={user} />
-      <PostFeed posts={allPosts} />
-
-      {!loading && !postsEnd && (
-        <button onClick={getMorePosts}>Load More</button>
-      )}
-
-      {loading && <div>Loading...</div>}
-
-      {postsEnd && <div>You have reached the end!</div>}
+      <PostFeed posts={posts} />
     </main>
   );
 }
