@@ -1,17 +1,19 @@
-import { useEffect, useContext, useState } from "react";
-import { useRouter } from "next/router";
-import { UserContext } from "../../lib/context/userContext";
-import { db, auth } from "../../lib/firebase";
-import { query, doc, orderBy, collection, serverTimestamp, setDoc } from "firebase/firestore";
-import { useCollection } from "react-firebase-hooks/firestore";
-import kebabCase from "lodash.kebabcase";
-import toast from "react-hot-toast";
-
 import s from "../../styles/Admin.module.css";
 import AuthCheck from "../../components/AuthCheck";
 import PostFeed from "../../components/PostFeed";
-import Metatags from "../../components/Metatags";
+import { UserContext } from "../../lib/context/userContext";
+import { db, auth } from "../../lib/firebase";
 
+import { useContext, useState } from "react";
+import { useRouter } from "next/router";
+
+import { useCollection } from "react-firebase-hooks/firestore";
+import kebabCase from "lodash.kebabcase";
+import toast from "react-hot-toast";
+import Metatags from "../../components/Metatags";
+import { query, doc, orderBy, collection, serverTimestamp, setDoc } from "firebase/firestore";
+
+// Helper function to translate text
 async function translateToEnglish(text) {
   try {
     const response = await fetch("/api/translate", {
@@ -21,10 +23,10 @@ async function translateToEnglish(text) {
     });
 
     const data = await response.json();
-    return data.translatedText || text; // Fallback to original text
+    return data.translatedText || text; // Return translated text or original if no translation
   } catch (error) {
     console.error("Translation error:", error);
-    return text; // Final fallback
+    return text; // Return original text in case of error
   }
 }
 
@@ -45,7 +47,7 @@ function PostList() {
   const q = query(collection(userRef, "posts"), orderBy("createdAt"));
   const [querySnapshot] = useCollection(q);
 
-  const posts = querySnapshot?.docs.map((doc) => doc.data());
+  const posts = querySnapshot?.docs.map(doc => doc.data());
 
   return (
     <div>
@@ -61,31 +63,41 @@ function CreateNewPost() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
 
-  useEffect(() => {
-    const updateSlug = async () => {
-      if (!title) return setSlug("");
+  // Generate a slug from the title, with translation if necessary
+  const generateSlug = async (titleText) => {
+    if (!titleText) return "";
 
-      let slugSource = title;
+    let slugSource = titleText;
 
-      if (/[\u0080-\uFFFF]/.test(title)) {
-        const translated = await translateToEnglish(title);
-        slugSource = translated;
-      }
+    // Translate to English if the title has non-Latin characters
+    if (/[\u0080-\uFFFF]/.test(titleText)) {
+      const translated = await translateToEnglish(titleText);
+      slugSource = translated;
+    }
 
-      setSlug(encodeURI(kebabCase(slugSource)));
-    };
+    return encodeURI(kebabCase(slugSource)); // Ensure the slug is URL-safe
+  };
 
-    updateSlug();
-  }, [title]); // Updates slug when title changes
+  const handleTitleChange = async (e) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
 
+    // Update slug as title changes
+    const generatedSlug = await generateSlug(newTitle);
+    setSlug(generatedSlug);
+  };
+
+  // Validate title length
   const isValid = title.length > 3 && title.length < 100;
 
+  // Create a new post in Firestore
   const createPost = async (e) => {
     e.preventDefault();
     const uid = auth.currentUser.uid;
     const userRef = doc(db, "users", uid);
     const docRef = doc(userRef, "posts", slug);
 
+    // Post data with default values
     const data = {
       title,
       slug,
@@ -100,6 +112,7 @@ function CreateNewPost() {
       saveCount: 0,
     };
 
+    // Save to Firestore
     await setDoc(docRef, data);
     toast.success("Post created!");
     router.push(`/admin/${slug}`);
@@ -108,10 +121,11 @@ function CreateNewPost() {
   return (
     <div className={s.createPost}>
       <h1>Create a post</h1>
+
       <form onSubmit={createPost}>
         <input
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={handleTitleChange}
           placeholder="My Awesome Article!"
           className={s.input}
         />
