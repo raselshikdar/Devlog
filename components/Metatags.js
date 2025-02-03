@@ -1,3 +1,5 @@
+// components/Metatags.js
+
 import Head from "next/head";
 
 export default function Metatags({
