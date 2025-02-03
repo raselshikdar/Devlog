@@ -1,28 +1,19 @@
+import { useState, useContext } from "react";
+import { useRouter } from "next/router";
+import { UserContext } from "../../lib/context/userContext";
+import { db, auth } from "../../lib/firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import toast from "react-hot-toast";
+import kebabCase from "lodash.kebabcase";
+import { translateText } from "../../lib/translate";  // Import translation function
 import s from "../../styles/Admin.module.css";
 import AuthCheck from "../../components/AuthCheck";
 import PostFeed from "../../components/PostFeed";
-import { UserContext } from "../../lib/context/userContext";
-import { db, auth } from "../../lib/firebase";
-
-import { useContext, useState } from "react";
-import { useRouter } from "next/router";
-
-import { useCollection } from "react-firebase-hooks/firestore";
-import kebabCase from "lodash.kebabcase";
-import toast from "react-hot-toast";
 import Metatags from "../../components/Metatags";
-import translateText from "../../lib/translate"; // Import translation function
+import { query, collection, orderBy } from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
 
-import {
-  query,
-  doc,
-  orderBy,
-  collection,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
-
-export default function AdminPostsPage() {
+export default function AdminPostsPage(props) {
   return (
     <main className={s.dashboard}>
       <Metatags title="Admin Dashboard" />
@@ -52,33 +43,33 @@ function CreateNewPost() {
   const router = useRouter();
   const { username } = useContext(UserContext);
   const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
+  const [isValid, setIsValid] = useState(false);
 
-  // Function to handle title input change
-  const handleTitleChange = async (e) => {
-    const inputTitle = e.target.value;
-    setTitle(inputTitle);
+  // Ensure slug is URL safe
+  const generateSlug = (title) => {
+    const slug = kebabCase(title);
+    return encodeURI(slug);
+  };
 
-    if (inputTitle) {
-      const translatedTitle = await translateText(inputTitle, "en"); // Translate to English
-      setSlug(encodeURI(kebabCase(translatedTitle))); // Generate slug from translated title
+  const handleSlugGeneration = async (title) => {
+    const slug = generateSlug(title);
+    if (slug === title) {
+      // If slug is already in English, return it directly
+      return slug;
     } else {
-      setSlug("");
+      // If the title is non-English, translate it and generate the slug
+      const translatedSlug = await translateText(title);
+      return generateSlug(translatedSlug);
     }
   };
 
-  // Validate length
-  const isValid = title.length > 3 && title.length < 100;
-
-  // Create a new post in Firestore
   const createPost = async (e) => {
     e.preventDefault();
+    const slug = await handleSlugGeneration(title);
     const uid = auth.currentUser.uid;
-
     const userRef = doc(db, "users", uid);
     const docRef = doc(userRef, "posts", slug);
 
-    // Default post data
     const data = {
       title,
       slug,
@@ -94,6 +85,7 @@ function CreateNewPost() {
     };
 
     await setDoc(docRef, data);
+
     toast.success("Post created!");
     router.push(`/admin/${slug}`);
   };
@@ -105,12 +97,12 @@ function CreateNewPost() {
       <form onSubmit={createPost}>
         <input
           value={title}
-          onChange={handleTitleChange}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder="My Awesome Article!"
           className={s.input}
         />
         <p>
-          <strong>Slug:</strong> {slug}
+          <strong>Slug:</strong> {generateSlug(title)}
         </p>
         <button type="submit" disabled={!isValid} className="btn-accent">
           Create New Post
