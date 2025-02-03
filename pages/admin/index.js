@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { UserContext } from "../../lib/context/userContext";
 import { db, auth } from "../../lib/firebase";
-import s from "../../styles/Admin.module.css";
-
 import { query, doc, orderBy, collection, serverTimestamp, setDoc } from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
 import kebabCase from "lodash.kebabcase";
 import toast from "react-hot-toast";
 
+import s from "../../styles/Admin.module.css";
 import AuthCheck from "../../components/AuthCheck";
 import PostFeed from "../../components/PostFeed";
 import Metatags from "../../components/Metatags";
@@ -45,7 +45,7 @@ function PostList() {
   const q = query(collection(userRef, "posts"), orderBy("createdAt"));
   const [querySnapshot] = useCollection(q);
 
-  const posts = querySnapshot?.docs.map(doc => doc.data());
+  const posts = querySnapshot?.docs.map((doc) => doc.data());
 
   return (
     <div>
@@ -61,26 +61,22 @@ function CreateNewPost() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
 
-  const generateSlug = async (titleText) => {
-    if (!titleText) return "";
+  useEffect(() => {
+    const updateSlug = async () => {
+      if (!title) return setSlug("");
 
-    let slugSource = titleText;
+      let slugSource = title;
 
-    if (/[\u0080-\uFFFF]/.test(titleText)) {
-      const translated = await translateToEnglish(titleText);
-      slugSource = translated;
-    }
+      if (/[\u0080-\uFFFF]/.test(title)) {
+        const translated = await translateToEnglish(title);
+        slugSource = translated;
+      }
 
-    return encodeURI(kebabCase(slugSource));
-  };
+      setSlug(encodeURI(kebabCase(slugSource)));
+    };
 
-  const handleTitleChange = async (e) => {
-    const newTitle = e.target.value;
-    setTitle(newTitle);
-
-    const generatedSlug = await generateSlug(newTitle);
-    setSlug(generatedSlug);
-  };
+    updateSlug();
+  }, [title]); // Updates slug when title changes
 
   const isValid = title.length > 3 && title.length < 100;
 
@@ -115,7 +111,7 @@ function CreateNewPost() {
       <form onSubmit={createPost}>
         <input
           value={title}
-          onChange={handleTitleChange}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder="My Awesome Article!"
           className={s.input}
         />
