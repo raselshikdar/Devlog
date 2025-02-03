@@ -47,7 +47,6 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  // Improve my using Admin SDK to select empty docs
   const postsRef = collectionGroup(db, "posts");
   const postsQuery = query(postsRef, where("published", "==", true));
   const snapshot = await getDocs(postsQuery);
@@ -76,7 +75,11 @@ export default function Post(props) {
 
   return (
     <main className={s.container}>
-      <Metatags title={post.title} description={post.title} />
+      {/* Pass title and description dynamically */}
+      <Metatags 
+        title={post.title} 
+        description={post.excerpt || post.title.slice(0, 160)} // Use excerpt or title as description
+      />
 
       <section>
         <PostContent post={post} />
