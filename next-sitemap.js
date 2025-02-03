@@ -1,19 +1,20 @@
 module.exports = {
   siteUrl: 'https://devlog.rweb.site',
-  generateRobotsTxt: true,
-  outDir: './public',
-  sitemapSize: 70000,
-  generateIndexSitemap: false,
-  changefreq: 'weekly', // Default frequency for blog posts and other pages
-  priority: 0.7, // Default priority for blog posts
+  generateRobotsTxt: true, // Generates robots.txt
+  outDir: './public', // Output directory for the generated files
+  changefreq: 'weekly', // Default frequency for other pages
+  priority: 0.7, // Default priority for other pages
+  sitemapSize: 70000, // Max number of URLs per sitemap
+  generateIndexSitemap: false, // Disable sitemap index file
   transform: async (config, url) => {
-    // Set homepage's priority to 1.0 and changefreq to 'daily'
+    // Check if the current URL is the homepage
     const isHomepage = url === config.siteUrl;
+
     return {
-      loc: url,  // Full URL
-      lastmod: new Date().toISOString(),  // Last modified date
-      changefreq: isHomepage ? 'daily' : 'weekly',  // Homepage gets daily updates, others weekly
-      priority: isHomepage ? 1.0 : 0.7,  // Homepage gets priority 1.0, others 0.7
+      loc: url,
+      lastmod: new Date().toISOString(),
+      changefreq: isHomepage ? 'daily' : 'weekly', // Homepage: daily, others: weekly
+      priority: isHomepage ? 1.0 : 0.7, // Homepage: 1.0, others: 0.7
     };
   },
 };
