@@ -1,19 +1,16 @@
 module.exports = {
-  siteUrl: 'https://devlog.rweb.site', // Your website address
-  generateRobotsTxt: true, // Enable robots.txt generation
-  sitemapSize: 70000, // Adjust the size limit (up to 70,000 URLs)
-  outDir: './public', // The output directory for the sitemap
-  changefreq: 'daily', // Frequency for URL changes
-  priority: 0.7, // Default priority for URLs
-  generateIndexSitemap: false, // Disable generation of sitemap index (sitemap-0.xml, sitemap-1.xml)
-  additionalSitemaps: [
-    'https://devlog.rweb.site/sitemap.xml', // Ensure this points to your main sitemap
-  ],
-  transform: async (config, url) => {
-    return {
-      loc: url,
-      changefreq: 'daily',
-      priority: 0.7,
-    }
-  },
-}
+  siteUrl: 'https://devlog.rweb.site', // Your site URL
+  generateRobotsTxt: true, // Generate robots.txt
+  outDir: './public', // Output directory
+  changefreq: 'daily', // Frequency of URL changes
+  priority: 0.7, // Default priority for all URLs
+  sitemapSize: 70000, // Max number of URLs per sitemap file (set to 70k for a single file)
+  
+  generateIndexSitemap: false, // Disable index sitemap (e.g., sitemap-0.xml)
+  
+  transform: async (config, url) => ({
+    loc: url, // Location of the URL
+    changefreq: 'daily', // Frequency of URL changes
+    priority: 0.7, // Priority of URL
+  }),
+};
