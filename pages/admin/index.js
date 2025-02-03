@@ -1,26 +1,20 @@
-import s from "../../styles/Admin.module.css";
-import AuthCheck from "../../components/AuthCheck";
-import PostFeed from "../../components/PostFeed";
-import { UserContext } from "../../lib/context/userContext";
-import { db, auth } from "../../lib/firebase";
-
 import { useContext, useState } from "react";
 import { useRouter } from "next/router";
-
+import { query, doc, orderBy, collection, serverTimestamp, setDoc } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import kebabCase from "lodash.kebabcase";
 import toast from "react-hot-toast";
-import Metatags from "../../components/Metatags";
-import {
-  query,
-  doc,
-  orderBy,
-  collection,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
+import { transliterate } from "transliteration";
+import { franc } from "franc-min";
 
-export default function AdminPostsPage(props) {
+import s from "../../styles/Admin.module.css";
+import AuthCheck from "../../components/AuthCheck";
+import PostFeed from "../../components/PostFeed";
+import Metatags from "../../components/Metatags";
+import { UserContext } from "../../lib/context/userContext";
+import { db, auth } from "../../lib/firebase";
+
+export default function AdminPostsPage() {
   return (
     <main className={s.dashboard}>
       <Metatags title="Admin Dashboard" />
@@ -37,7 +31,8 @@ function PostList() {
   const q = query(collection(userRef, "posts"), orderBy("createdAt"));
   const [querySnapshot] = useCollection(q);
 
-  const posts = querySnapshot?.docs.map(doc => doc.data());
+  const posts = querySnapshot?.docs.map((doc) => doc.data());
+
   return (
     <div>
       <h2>Manage your Posts</h2>
@@ -50,22 +45,35 @@ function CreateNewPost() {
   const router = useRouter();
   const { username } = useContext(UserContext);
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
 
-  // Ensure slug is URL safe
-  const slug = encodeURI(kebabCase(title));
+  const generateSlug = (titleText) => {
+    if (!titleText) return "";
 
-  // Validate length
+    let slugSource = titleText;
+
+    // Detect language; if not English, transliterate to English
+    if (franc(titleText, { minLength: 3 }) !== "eng") {
+      slugSource = transliterate(titleText);
+    }
+
+    return encodeURI(kebabCase(slugSource));
+  };
+
+  const handleTitleChange = (e) => {
+    const newTitle = e.target.value;
+    setTitle(newTitle);
+    setSlug(generateSlug(newTitle));
+  };
+
   const isValid = title.length > 3 && title.length < 100;
 
-  // Create a new post in firestore
-  const createPost = async e => {
+  const createPost = async (e) => {
     e.preventDefault();
     const uid = auth.currentUser.uid;
-
     const userRef = doc(db, "users", uid);
     const docRef = doc(userRef, "posts", slug);
 
-    // give all fields a default value here
     const data = {
       title,
       slug,
@@ -81,21 +89,17 @@ function CreateNewPost() {
     };
 
     await setDoc(docRef, data);
-
     toast.success("Post created!");
-
-    // Imperative navigation after doc is set
     router.push(`/admin/${slug}`);
   };
 
   return (
     <div className={s.createPost}>
       <h1>Create a post</h1>
-
       <form onSubmit={createPost}>
         <input
           value={title}
-          onChange={e => setTitle(e.target.value)}
+          onChange={handleTitleChange}
           placeholder="My Awesome Article!"
           className={s.input}
         />
