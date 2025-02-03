@@ -4,7 +4,7 @@ import PostFeed from "../../components/PostFeed";
 import { UserContext } from "../../lib/context/userContext";
 import { db, auth } from "../../lib/firebase";
 
-import { useContext, useState } from "react";
+import { useContext, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 
 import { useCollection } from "react-firebase-hooks/firestore";
@@ -28,12 +28,25 @@ async function translateToEnglish(text) {
       }),
     });
 
+    if (!res.ok) {
+      throw new Error("Translation API request failed");
+    }
+
     const data = await res.json();
-    return data.translatedText || text; // If translation fails, use the original text
+    return data.translatedText || text; // Fallback to original text if translation fails
   } catch (error) {
     console.error("Translation error:", error);
-    return text;
+    return text; // Fallback to original text in case of any error
   }
+}
+
+// Debounce function to limit API calls while typing
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
 }
 
 function CreateNewPost() {
@@ -48,23 +61,30 @@ function CreateNewPost() {
 
     let slugSource = titleText;
 
-    // Translate to English only if necessary
+    // Translate to English only if the title is not in English
     try {
       const translatedTitle = await translateToEnglish(titleText);
       slugSource = translatedTitle;
     } catch (error) {
-      console.error("Translation failed, using original title");
+      console.error("Translation failed, using original title:", error);
     }
 
     return encodeURI(kebabCase(slugSource));
   };
 
+  // Debounced version of handleTitleChange to avoid excessive API calls
+  const debouncedHandleTitleChange = useCallback(
+    debounce(async (newTitle) => {
+      const generatedSlug = await generateSlug(newTitle);
+      setSlug(generatedSlug);
+    }, 500), // Adjust the delay as needed
+    []
+  );
+
   const handleTitleChange = async (e) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
-
-    const generatedSlug = await generateSlug(newTitle);
-    setSlug(generatedSlug);
+    debouncedHandleTitleChange(newTitle);
   };
 
   const isValid = title.length > 3 && title.length < 100;
@@ -133,7 +153,7 @@ function PostList() {
   const q = query(collection(userRef, "posts"), orderBy("createdAt"));
   const [querySnapshot] = useCollection(q);
 
-  const posts = querySnapshot?.docs.map(doc => doc.data());
+  const posts = querySnapshot?.docs.map((doc) => doc.data());
 
   return (
     <div>
