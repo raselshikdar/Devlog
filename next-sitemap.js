@@ -1,5 +1,6 @@
 module.exports = {
-  siteUrl: 'https://devlog.rweb.site',
+  // Use environment variable instead of hardcoded domain
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://devlog.rweb.site',
   generateRobotsTxt: true,
   outDir: './public',
   changefreq: 'weekly',
@@ -7,12 +8,12 @@ module.exports = {
   sitemapSize: 70000,
   generateIndexSitemap: false,
   transform: async (config, url) => {
-    // Correctly identify homepage by path
+    // Universal homepage check (works with any domain)
     const isHomepage = url === '/';
-
-    // Ensure absolute URL for sitemap entries
+    
     return {
-      loc: `${config.siteUrl}${url}`, // Combine siteUrl with path
+      // Safely construct absolute URL using dynamic siteUrl
+      loc: new URL(url, config.siteUrl).toString(),
       lastmod: new Date().toISOString(),
       changefreq: isHomepage ? 'daily' : config.changefreq,
       priority: isHomepage ? 1.0 : config.priority,
