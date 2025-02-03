@@ -4,7 +4,7 @@ import PostFeed from "../../components/PostFeed";
 import { UserContext } from "../../lib/context/userContext";
 import { db, auth } from "../../lib/firebase";
 
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import { useCollection } from "react-firebase-hooks/firestore";
@@ -23,8 +23,7 @@ async function translateToEnglish(text) {
     });
 
     const data = await response.json();
-    console.log("Translation Data:", data); // Debugging log
-    return data.translatedText || text; // Return translated text or original text
+    return data.translatedText || text; // Return translated text or original text if no translation found
   } catch (error) {
     console.error("Translation error:", error);
     return text; // Return original text in case of error
@@ -70,23 +69,32 @@ function CreateNewPost() {
 
     let slugSource = titleText;
 
-    // If title contains non-Latin characters, translate it to English
-    if (/[\u0080-\uFFFF]/.test(titleText)) {
-      const translated = await translateToEnglish(titleText);
-      slugSource = translated;
+    // Detect non-ASCII characters using proper regex
+    if (/[^\x00-\x7F]/.test(titleText)) {
+      try {
+        const translated = await translateToEnglish(titleText);
+        slugSource = translated;
+      } catch (error) {
+        console.error("Translation failed, using transliteration:", error);
+      }
     }
 
-    console.log("Generated Slug Source:", slugSource); // Debugging log
-    return encodeURI(kebabCase(slugSource)); // Ensure the slug is URL-safe
+    // Ensure proper slug formatting
+    const finalSlug = encodeURI(kebabCase(slugSource));
+    return finalSlug;
   };
 
   const handleTitleChange = async (e) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
 
-    // Update slug as title changes
-    const generatedSlug = await generateSlug(newTitle);
-    setSlug(generatedSlug);
+    // Debounce slug generation
+    const timeoutId = setTimeout(async () => {
+      const generatedSlug = await generateSlug(newTitle);
+      setSlug(generatedSlug);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
   };
 
   // Validate title length
