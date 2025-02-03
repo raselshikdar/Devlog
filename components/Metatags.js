@@ -2,7 +2,7 @@ import Head from "next/head";
 
 export default function Metatags({
   title = "Devlog",
-  description = "DevLog is a blogging platform for the developers. This website is built with Next.js and Firebase and is loosely inspired by Dev.to",
+  description = "Devlog is a dynamic blogging platform where developers share insights, codes, and ideas. Engage with articles and grow together in a thriving tech community.",
   image = "/featured.png",
 }) {
   return (
@@ -13,7 +13,7 @@ export default function Metatags({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
-    <meta name="google-site-verification" content="QL7oyxAB-xfJ0bzZYvQAU9CnGNnbyUx8k7fGG5n7Srk" />
+      <meta name="google-site-verification" content="QL7oyxAB-xfJ0bzZYvQAU9CnGNnbyUx8k7fGG5n7Srk" />
 
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
