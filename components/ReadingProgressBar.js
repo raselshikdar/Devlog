@@ -23,9 +23,9 @@ export default function ReadingProgressBar() {
         height: "5px", // Adjust the height for the bar
         backgroundColor: "#1dd1a1", // The progress bar color
         position: "fixed",
-        top: "60px", // Adjust to position below the navbar
+        top: "60px", // Position it below the navbar
         left: "0",
-        zIndex: "9999", // Make sure it's above content
+        zIndex: "9999", // Ensure it stays above content
         transition: "width 0.2s ease-out",
       }}
     ></div>
