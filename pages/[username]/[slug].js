@@ -1,3 +1,5 @@
+// pages/[username]/[slug].js
+
 import s from "../../styles/Post.module.css";
 import PostContent from "../../components/PostContent";
 import HeartButton from "../../components/HeartButton";
@@ -66,19 +68,17 @@ export async function getStaticPaths() {
 
 export default function Post(props) {
   const postRef = doc(db, props.path);
-
   const [realtimePost] = useDocumentData(postRef);
-
   const post = realtimePost || props.post;
-
   const { user: currentUser } = useContext(UserContext);
 
   return (
     <main className={s.container}>
-      {/* Pass title and description dynamically */}
+      {/* Pass title and description dynamically to Metatags */}
       <Metatags 
         title={post.title} 
         description={post.excerpt || post.title.slice(0, 160)} // Use excerpt or title as description
+        image={post.image || '/featured.png'}  // Default image if not provided
       />
 
       <section>
