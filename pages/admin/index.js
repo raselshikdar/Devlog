@@ -1,18 +1,32 @@
 import { useContext, useState } from "react";
 import { useRouter } from "next/router";
+import { UserContext } from "../../lib/context/userContext";
+import { db, auth } from "../../lib/firebase";
+import s from "../../styles/Admin.module.css";
+
 import { query, doc, orderBy, collection, serverTimestamp, setDoc } from "firebase/firestore";
-import { useCollection } from "react-firebase-hooks/firestore";
 import kebabCase from "lodash.kebabcase";
 import toast from "react-hot-toast";
-import { transliterate } from "transliteration";
-import { franc } from "franc-min";
 
-import s from "../../styles/Admin.module.css";
 import AuthCheck from "../../components/AuthCheck";
 import PostFeed from "../../components/PostFeed";
 import Metatags from "../../components/Metatags";
-import { UserContext } from "../../lib/context/userContext";
-import { db, auth } from "../../lib/firebase";
+
+async function translateToEnglish(text) {
+  try {
+    const response = await fetch("/api/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+
+    const data = await response.json();
+    return data.translatedText || text; // Fallback to original text
+  } catch (error) {
+    console.error("Translation error:", error);
+    return text; // Final fallback
+  }
+}
 
 export default function AdminPostsPage() {
   return (
@@ -31,7 +45,7 @@ function PostList() {
   const q = query(collection(userRef, "posts"), orderBy("createdAt"));
   const [querySnapshot] = useCollection(q);
 
-  const posts = querySnapshot?.docs.map((doc) => doc.data());
+  const posts = querySnapshot?.docs.map(doc => doc.data());
 
   return (
     <div>
@@ -47,23 +61,25 @@ function CreateNewPost() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
 
-  const generateSlug = (titleText) => {
+  const generateSlug = async (titleText) => {
     if (!titleText) return "";
 
     let slugSource = titleText;
 
-    // Detect language; if not English, transliterate to English
-    if (franc(titleText, { minLength: 3 }) !== "eng") {
-      slugSource = transliterate(titleText);
+    if (/[\u0080-\uFFFF]/.test(titleText)) {
+      const translated = await translateToEnglish(titleText);
+      slugSource = translated;
     }
 
     return encodeURI(kebabCase(slugSource));
   };
 
-  const handleTitleChange = (e) => {
+  const handleTitleChange = async (e) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
-    setSlug(generateSlug(newTitle));
+
+    const generatedSlug = await generateSlug(newTitle);
+    setSlug(generatedSlug);
   };
 
   const isValid = title.length > 3 && title.length < 100;
