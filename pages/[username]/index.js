@@ -4,8 +4,7 @@ import UserProfile from "../../components/UserProfile";
 import Metatags from "../../components/Metatags";
 import PostFeed from "../../components/PostFeed";
 import { db } from "../../lib/firebase";
-import { getDocs, query, collection, where, orderBy, limit, startAfter } from "firebase/firestore";
-import { AiOutlineCloseCircle } from "react-icons/ai";
+import { getDocs, query, collection, where, orderBy, limit, startAfter, doc } from "firebase/firestore";
 
 // Max posts per page
 const LIMIT = 5;
@@ -46,30 +45,30 @@ export default function UserProfilePage({ user, posts }) {
   const [allPosts, setAllPosts] = useState(posts);
   const [loading, setLoading] = useState(false);
   const [postsEnd, setPostsEnd] = useState(false);
+  const [lastVisible, setLastVisible] = useState(null); // Track the last document for pagination
 
   // Function to fetch more posts
   const getMorePosts = async () => {
     setLoading(true);
-    const last = allPosts[allPosts.length - 1];
 
-    const cursor =
-      typeof last.createdAt === "number"
-        ? Timestamp.fromMillis(last.createdAt)
-        : last.createdAt;
-
+    // Set cursor based on last post
     const postsQuery = query(
       collection(db, "users", user.uid, "posts"),
       where("published", "==", true),
       orderBy("createdAt", "desc"),
-      startAfter(cursor),
+      startAfter(lastVisible), // Start after the last post
       limit(LIMIT)
     );
 
-    const newPosts = (await getDocs(postsQuery)).docs.map(postToJSON);
+    const snapshot = await getDocs(postsQuery);
+    const newPosts = snapshot.docs.map(postToJSON);
+    const lastVisiblePost = snapshot.docs[snapshot.docs.length - 1];
+
     setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
+    setLastVisible(lastVisiblePost); // Update the last visible document
     setLoading(false);
 
-    // Check if we have reached the end of posts
+    // If there are fewer posts than LIMIT, we have reached the end
     if (newPosts.length < LIMIT) {
       setPostsEnd(true);
     }
