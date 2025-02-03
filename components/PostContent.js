@@ -3,6 +3,7 @@ import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
+import ReadingProgressBar from "./ReadingProgressBar"; // Import the progress bar
 
 export default function PostContent({ post }) {
   const [currentUrl, setCurrentUrl] = useState("");
@@ -10,12 +11,10 @@ export default function PostContent({ post }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Safely set current URL
     if (typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
     }
 
-    // Add null check for post
     if (post?.content) {
       const tagMatch = post.content.match(/Tags:\s*([\w\s,]+)/i);
       if (tagMatch) {
@@ -31,7 +30,6 @@ export default function PostContent({ post }) {
     setLoading(false);
   }, [post]);
 
-  // Add error handling for date
   const getFormattedDate = () => {
     try {
       const createdAt = post?.createdAt ? 
@@ -48,12 +46,14 @@ export default function PostContent({ post }) {
   };
 
   if (loading) return <div>Loading...</div>;
-  if (!post) return <div>Post not found</div>; // Add missing post handling
+  if (!post) return <div>Post not found</div>;
 
   return (
     <>
+      <ReadingProgressBar /> {/* Add the reading progress bar here */}
+
       <div className="card">
-        <h1>{post?.title || "Untitled Post"}</h1> {/* Add fallback */}
+        <h1>{post?.title || "Untitled Post"}</h1>
         <span className="text-sm">
           Written by{" "}
           <Link href={`/${post.username}/`}>
