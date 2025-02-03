@@ -1,34 +1,18 @@
-import s from "../../styles/Admin.module.css";
-import AuthCheck from "../../components/AuthCheck";
-import PostFeed from "../../components/PostFeed";
-import { UserContext } from "../../lib/context/userContext";
-import { db, auth } from "../../lib/firebase";
-
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/router";
-
+import { query, doc, orderBy, collection, serverTimestamp, setDoc } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import kebabCase from "lodash.kebabcase";
 import toast from "react-hot-toast";
+import { transliterate } from "transliteration";
+import { franc } from "franc-min";
+
+import s from "../../styles/Admin.module.css";
+import AuthCheck from "../../components/AuthCheck";
+import PostFeed from "../../components/PostFeed";
 import Metatags from "../../components/Metatags";
-import { query, doc, orderBy, collection, serverTimestamp, setDoc } from "firebase/firestore";
-
-// Helper function to translate text
-async function translateToEnglish(text) {
-  try {
-    const response = await fetch("/api/translate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    });
-
-    const data = await response.json();
-    return data.translatedText || text; // Return translated text or original text if no translation found
-  } catch (error) {
-    console.error("Translation error:", error);
-    return text; // Return original text in case of error
-  }
-}
+import { UserContext } from "../../lib/context/userContext";
+import { db, auth } from "../../lib/firebase";
 
 export default function AdminPostsPage() {
   return (
@@ -47,7 +31,7 @@ function PostList() {
   const q = query(collection(userRef, "posts"), orderBy("createdAt"));
   const [querySnapshot] = useCollection(q);
 
-  const posts = querySnapshot?.docs.map(doc => doc.data());
+  const posts = querySnapshot?.docs.map((doc) => doc.data());
 
   return (
     <div>
@@ -63,51 +47,33 @@ function CreateNewPost() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
 
-  // Generate a slug from the title, with translation if necessary
-  const generateSlug = async (titleText) => {
+  const generateSlug = (titleText) => {
     if (!titleText) return "";
 
     let slugSource = titleText;
 
-    // Detect non-ASCII characters using proper regex
-    if (/[^\x00-\x7F]/.test(titleText)) {
-      try {
-        const translated = await translateToEnglish(titleText);
-        slugSource = translated;
-      } catch (error) {
-        console.error("Translation failed, using transliteration:", error);
-      }
+    // Detect language; if not English, transliterate to English
+    if (franc(titleText, { minLength: 3 }) !== "eng") {
+      slugSource = transliterate(titleText);
     }
 
-    // Ensure proper slug formatting
-    const finalSlug = encodeURI(kebabCase(slugSource));
-    return finalSlug;
+    return encodeURI(kebabCase(slugSource));
   };
 
-  const handleTitleChange = async (e) => {
+  const handleTitleChange = (e) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
-
-    // Debounce slug generation
-    const timeoutId = setTimeout(async () => {
-      const generatedSlug = await generateSlug(newTitle);
-      setSlug(generatedSlug);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
+    setSlug(generateSlug(newTitle));
   };
 
-  // Validate title length
   const isValid = title.length > 3 && title.length < 100;
 
-  // Create a new post in Firestore
   const createPost = async (e) => {
     e.preventDefault();
     const uid = auth.currentUser.uid;
     const userRef = doc(db, "users", uid);
     const docRef = doc(userRef, "posts", slug);
 
-    // Post data with default values
     const data = {
       title,
       slug,
@@ -122,7 +88,6 @@ function CreateNewPost() {
       saveCount: 0,
     };
 
-    // Save to Firestore
     await setDoc(docRef, data);
     toast.success("Post created!");
     router.push(`/admin/${slug}`);
@@ -131,7 +96,6 @@ function CreateNewPost() {
   return (
     <div className={s.createPost}>
       <h1>Create a post</h1>
-
       <form onSubmit={createPost}>
         <input
           value={title}
