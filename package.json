@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node generate-sitemap.js",
+    "build": "next build", 
     "start": "next start",
     "export": "next export",
     "postbuild": "next-sitemap"
@@ -28,6 +28,7 @@
     "remark-gfm": "^3.0.1",
     "yup": "^0.32.11",
     "sitemap": "^6.2.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "next-sitemap": "^2.0.3"
   }
 }
