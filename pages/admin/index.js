@@ -23,7 +23,8 @@ async function translateToEnglish(text) {
     });
 
     const data = await response.json();
-    return data.translatedText || text; // Return translated text or original if no translation
+    console.log("Translation Data:", data); // Debugging log
+    return data.translatedText || text; // Return translated text or original text
   } catch (error) {
     console.error("Translation error:", error);
     return text; // Return original text in case of error
@@ -69,12 +70,13 @@ function CreateNewPost() {
 
     let slugSource = titleText;
 
-    // Translate to English if the title has non-Latin characters
+    // If title contains non-Latin characters, translate it to English
     if (/[\u0080-\uFFFF]/.test(titleText)) {
       const translated = await translateToEnglish(titleText);
       slugSource = translated;
     }
 
+    console.log("Generated Slug Source:", slugSource); // Debugging log
     return encodeURI(kebabCase(slugSource)); // Ensure the slug is URL-safe
   };
 
