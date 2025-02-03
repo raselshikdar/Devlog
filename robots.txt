@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /private/
-Allow: /public/
-Sitemap: https://devlog.rweb.site/sitemap.xml
