@@ -1,15 +1,19 @@
 import Head from "next/head";
-import { cleanDescription, getAbsoluteImageUrl } from "@/lib/utils";  // Correct alias after jsconfig.json is added
+import { cleanDescription, getAbsoluteImageUrl } from "@/lib/utils";
 
 export default function Metatags({
   title = "Devlog - Developer Community Blog.",
   description = "Devlog is a dynamic blogging platform where developers share insights, codes, and ideas. Engage with articles and grow together in a thriving tech community.",
   image = "/featured.png",
-  url = "",  // Ensure this URL is relative, like "/rasel/about-us"
+  url = "", // Ensure this is a relative path (e.g., "/rasel/about-us")
   type = "article",
   author = "Devlog Team",
 }) {
-  const canonicalUrl = url ? `https://devlog.rweb.site${url}` : "https://devlog.rweb.site";
+  // Construct canonical URL correctly
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://devlog.rweb.site";
+  const canonicalUrl = url ? `${baseUrl}${url}` : baseUrl;
+
+  // Clean and truncate the description
   const metaDescription = cleanDescription(description);
 
   return (
