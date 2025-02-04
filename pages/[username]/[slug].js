@@ -11,14 +11,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { useContext } from "react";
-import {
-  query,
-  getDoc,
-  getDocs,
-  doc,
-  collectionGroup,
-  where,
-} from "firebase/firestore";
+import { query, getDoc, getDocs, doc, collectionGroup, where } from "firebase/firestore";
 import { cleanDescription, getAbsoluteImageUrl } from "../../lib/utils";
 
 export async function getStaticProps({ params }) {
@@ -38,8 +31,11 @@ export async function getStaticProps({ params }) {
   }
 
   if (!doesPostExists) {
-    return { notFound: true };
+    return {
+      notFound: true,
+    };
   }
+
   return {
     props: { post, path },
     revalidate: 100,
@@ -51,7 +47,7 @@ export async function getStaticPaths() {
   const postsQuery = query(postsRef, where("published", "==", true));
   const snapshot = await getDocs(postsQuery);
 
-  const paths = snapshot.docs.map(doc => {
+  const paths = snapshot.docs.map((doc) => {
     const { slug, username } = doc.data();
     return {
       params: { username, slug },
@@ -73,7 +69,7 @@ export default function Post(props) {
   const postTitle = post.title || "Untitled Post";
   const postDescription = cleanDescription(post.excerpt || post.content || postTitle);
   const postImage = getAbsoluteImageUrl(post.image || "/featured.png");
-  const postUrl = `https://devlog.rweb.site/${post.username}/${post.slug}`;
+  const postUrl = `/${post.username}/${post.slug}`; // Relative path only
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -97,14 +93,21 @@ export default function Post(props) {
     "dateModified": post.updatedAt || post.createdAt,
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": postUrl,
+      "@id": `https://devlog.rweb.site${postUrl}`,
     },
   };
 
   return (
     <main className={s.container}>
-      <Metatags title={postTitle} description={postDescription} image={postImage} url={postUrl} />
+      {/* Pass relative path to Metatags */}
+      <Metatags
+        title={postTitle}
+        description={postDescription}
+        image={postImage}
+        url={postUrl} // Relative path only
+      />
 
+      {/* Structured Data */}
       <Head>
         <script
           type="application/ld+json"
