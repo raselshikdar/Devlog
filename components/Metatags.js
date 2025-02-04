@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { cleanDescription, getAbsoluteImageUrl } from "@/lib/utils";
+import { cleanDescription, getAbsoluteImageUrl } from "@/lib/utils";  // Correct alias after jsconfig.json is added
 
 export default function Metatags({
   title = "Devlog - Developer Community Blog",
@@ -25,9 +25,6 @@ export default function Metatags({
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta httpEquiv="Content-Language" content="en" />
 
-      {/* Google Search Verification */}
-      <meta name="google-site-verification" content="QL7oyxAB-xfJ0bzZYvQAU9CnGNnbyUx8k7fGG5n7Srk" />
-
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
       <meta property="og:url" content={canonicalUrl} />
@@ -42,6 +39,9 @@ export default function Metatags({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={getAbsoluteImageUrl(image)} />
+
+      {/* Google Search Verification */}
+      <meta name="google-site-verification" content="QL7oyxAB-xfJ0bzZYvQAU9CnGNnbyUx8k7fGG5n7Srk" />
     </Head>
   );
 }
