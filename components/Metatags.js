@@ -2,8 +2,8 @@ import Head from "next/head";
 import { cleanDescription, getAbsoluteImageUrl } from "@/lib/utils";
 
 export default function Metatags({
-  title = "Devlog - Developer Community Blog.",
-  description = "Devlog is a dynamic blogging platform where developers share insights, codes, and ideas. Engage with articles and grow together in a thriving tech community.",
+  title = "Devlog - The Ultimate Developer Blog",
+  description = "Devlog is an open-source blogging platform for developers to share insights, code, and ideas. Read, write, and connect in a thriving tech community.",
   image = "/featured.png",
   url = "", // Ensure this is a relative path (e.g., "/rasel/about-us")
   type = "article",
