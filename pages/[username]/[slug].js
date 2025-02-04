@@ -1,5 +1,3 @@
-// pages/[username]/[slug].js
-
 import s from "../../styles/Post.module.css";
 import PostContent from "../../components/PostContent";
 import HeartButton from "../../components/HeartButton";
@@ -9,6 +7,7 @@ import Comments from "../../components/Comments";
 import { UserContext } from "../../lib/context/userContext";
 import { db, getUserWithUsername, postToJSON } from "../../lib/firebase";
 
+import Head from "next/head";
 import Link from "next/link";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { useContext } from "react";
@@ -20,6 +19,7 @@ import {
   collectionGroup,
   where,
 } from "firebase/firestore";
+import { cleanDescription, getAbsoluteImageUrl } from "../../lib/utils";
 
 export async function getStaticProps({ params }) {
   const { username, slug } = params;
@@ -38,9 +38,7 @@ export async function getStaticProps({ params }) {
   }
 
   if (!doesPostExists) {
-    return {
-      notFound: true,
-    };
+    return { notFound: true };
   }
   return {
     props: { post, path },
@@ -72,14 +70,47 @@ export default function Post(props) {
   const post = realtimePost || props.post;
   const { user: currentUser } = useContext(UserContext);
 
+  const postTitle = post.title || "Untitled Post";
+  const postDescription = cleanDescription(post.excerpt || post.content || postTitle);
+  const postImage = getAbsoluteImageUrl(post.image || "/featured.png");
+  const postUrl = `https://devlog.rweb.site/${post.username}/${post.slug}`;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": postTitle,
+    "description": postDescription,
+    "image": postImage,
+    "author": {
+      "@type": "Person",
+      "name": post.username,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Devlog",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://devlog.rweb.site/logo.png",
+      },
+    },
+    "datePublished": post.createdAt,
+    "dateModified": post.updatedAt || post.createdAt,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": postUrl,
+    },
+  };
+
   return (
     <main className={s.container}>
-      {/* Pass title and description dynamically to Metatags */}
-      <Metatags 
-        title={post.title} 
-        description={post.excerpt || post.title.slice(0, 160)} // Use excerpt or title as description
-        image={post.image || '/featured.png'}  // Default image if not provided
-      />
+      <Metatags title={postTitle} description={postDescription} image={postImage} url={postUrl} />
+
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </Head>
 
       <section>
         <PostContent post={post} />
