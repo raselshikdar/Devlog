@@ -80,7 +80,7 @@ export default function Home(props) {
   return (
     <main>
       <Metatags
-        title="Devlog - Empowering developers to share, learn, and grow."
+        title="Devlog - Developer Community Blog."
         description="Devlog is a dynamic blogging platform where developers share insights, codes, and ideas. Engage with articles and grow together in a thriving tech community."
       />
       {!exitedHero && (
