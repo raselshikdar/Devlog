@@ -3,7 +3,7 @@ import { cleanDescription, getAbsoluteImageUrl } from "@/lib/utils";  // Correct
 
 export default function Metatags({
   title = "Devlog - Developer Community Blog",
-  description = "Devlog is a blogging platform where developers share insights, code, and experiences.",
+  description = "Devlog is a dynamic blogging platform where developers share insights, codes, and ideas. Engage with articles and grow together in a thriving tech community.",
   image = "/featured.png",
   url = "",
   type = "article",
