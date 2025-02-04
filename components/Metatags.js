@@ -5,11 +5,11 @@ export default function Metatags({
   title = "Devlog - Developer Community Blog.",
   description = "Devlog is a dynamic blogging platform where developers share insights, codes, and ideas. Engage with articles and grow together in a thriving tech community.",
   image = "/featured.png",
-  url = "",
+  url = "",  // Ensure this URL is relative, like "/rasel/about-us"
   type = "article",
   author = "Devlog Team",
 }) {
-  const canonicalUrl = `https://devlog.rweb.site${url}`;
+  const canonicalUrl = url ? `https://devlog.rweb.site${url}` : "https://devlog.rweb.site";
   const metaDescription = cleanDescription(description);
 
   return (
