@@ -2,7 +2,7 @@ import Head from "next/head";
 import { cleanDescription, getAbsoluteImageUrl } from "@/lib/utils";  // Correct alias after jsconfig.json is added
 
 export default function Metatags({
-  title = "Devlog - Developer Community Blog",
+  title = "Devlog - Developer Community Blog.",
   description = "Devlog is a dynamic blogging platform where developers share insights, codes, and ideas. Engage with articles and grow together in a thriving tech community.",
   image = "/featured.png",
   url = "",
