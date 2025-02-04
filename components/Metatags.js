@@ -1,17 +1,21 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { cleanDescription, getAbsoluteImageUrl } from "@/lib/utils";
 
 export default function Metatags({
   title = "Devlog - The Ultimate Developer Blog",
   description = "Devlog is an open-source blogging platform for developers to share insights, code, and ideas. Read, write, and connect in a thriving tech community.",
   image = "/featured.png",
-  url = "", // Ensure this is a relative path (e.g., "/rasel/about-us")
+  url, // No default value
   type = "article",
   author = "Devlog Team",
 }) {
-  // Construct canonical URL correctly
+  const router = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://devlog.rweb.site";
-  const canonicalUrl = url ? `${baseUrl}${url}` : baseUrl;
+  
+  // Get current path and construct canonical URL
+  const currentPath = router.asPath;
+  const canonicalUrl = url ? `${baseUrl}${url}` : `${baseUrl}${currentPath}`;
 
   // Clean and truncate the description
   const metaDescription = cleanDescription(description);
