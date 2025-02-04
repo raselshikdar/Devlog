@@ -16,7 +16,7 @@ import {
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 // Max post to query per page
-const LIMIT = 10;
+const LIMIT = 12;
 
 export async function getServerSideProps(context) {
   const postsRef = collectionGroup(db, "posts");
