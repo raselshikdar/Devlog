@@ -5,13 +5,12 @@ import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 import ReadingProgressBar from "./ReadingProgressBar"; // Import the progress bar
 import Head from "next/head";
-import { db } from "../firebase"; // Import your Firebase configuration
+import firebase from "../lib/firebase"; // Updated import path
 
 export default function PostContent({ post }) {
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
   const [loading, setLoading] = useState(true);
-  const [faqData, setFaqData] = useState([]); // State to store FAQ data
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -30,15 +29,6 @@ export default function PostContent({ post }) {
       }
     }
 
-    // Fetch FAQ data from Firestore
-    const fetchFaqData = async () => {
-      const faqRef = db.collection("faqs"); // Replace with your Firestore collection name
-      const snapshot = await faqRef.get();
-      const faqs = snapshot.docs.map(doc => doc.data());
-      setFaqData(faqs);
-    };
-
-    fetchFaqData();
     setLoading(false);
   }, [post]);
 
@@ -56,6 +46,19 @@ export default function PostContent({ post }) {
       return "[Invalid Date]";
     }
   };
+
+  // FAQ Data (You can replace this with dynamic data if required)
+  const faqData = [
+    {
+      question: "What is Devlog?",
+      answer: "Devlog is an open-source blogging platform for developers.",
+    },
+    {
+      question: "How do I sign up?",
+      answer: "You can sign up using Google, GitHub, or Facebook.",
+    },
+    // Add more FAQ items here as needed
+  ];
 
   // FAQ Schema Markup
   const faqSchema = {
@@ -163,16 +166,12 @@ export default function PostContent({ post }) {
       <div className="card">
         <h3>Frequently Asked Questions</h3>
         <div className="faq-section">
-          {faqData.length > 0 ? (
-            faqData.map((faq, index) => (
-              <div key={index} className="faq-item">
-                <h4>{faq.question}</h4>
-                <p>{faq.answer}</p>
-              </div>
-            ))
-          ) : (
-            <p>No FAQs available at the moment.</p>
-          )}
+          {faqData.map((faq, index) => (
+            <div key={index} className="faq-item">
+              <h4>{faq.question}</h4>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
         </div>
       </div>
     </>
