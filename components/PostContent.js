@@ -4,6 +4,7 @@ import format from "date-fns/format";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 import ReadingProgressBar from "./ReadingProgressBar"; // Import the progress bar
+import Head from "next/head";
 
 export default function PostContent({ post }) {
   const [currentUrl, setCurrentUrl] = useState("");
@@ -45,11 +46,43 @@ export default function PostContent({ post }) {
     }
   };
 
+  // FAQ Data (You can replace this with dynamic data if required)
+  const faqData = [
+    {
+      question: "What is Devlog?",
+      answer: "Devlog is an open-source blogging platform for developers.",
+    },
+    {
+      question: "How do I sign up?",
+      answer: "You can sign up using Google, GitHub, or Facebook.",
+    },
+    // Add more FAQ items here as needed
+  ];
+
+  // FAQ Schema Markup
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqData.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer,
+      }
+    })),
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!post) return <div>Post not found</div>;
 
   return (
     <>
+      <Head>
+        {/* Adding FAQ Schema Markup */}
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Head>
+
       <ReadingProgressBar /> {/* Add the reading progress bar here */}
 
       <div className="card">
@@ -70,7 +103,7 @@ export default function PostContent({ post }) {
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-          {/* Facebook */}
+          {/* Share buttons */}
           <a
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(post.title)}&u=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -82,7 +115,6 @@ export default function PostContent({ post }) {
             <FaFacebook size={16} />
           </a>
 
-          {/* Twitter */}
           <a
             href={`https://x.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -94,7 +126,6 @@ export default function PostContent({ post }) {
             <FaTwitter size={16} />
           </a>
 
-          {/* WhatsApp */}
           <a
             href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + currentUrl)}`}
             className="btn"
@@ -106,7 +137,6 @@ export default function PostContent({ post }) {
             <FaWhatsapp size={16} />
           </a>
 
-          {/* Telegram */}
           <a
             href={`https://t.me/share/url?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -118,7 +148,6 @@ export default function PostContent({ post }) {
             <FaTelegram size={16} />
           </a>
 
-          {/* Copy Link */}
           <button
             className="btn"
             style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
@@ -130,6 +159,18 @@ export default function PostContent({ post }) {
           >
             <FaCopy size={16} />
           </button>
+        </div>
+      </div>
+
+      <div className="card">
+        <h3>Frequently Asked Questions</h3>
+        <div className="faq-section">
+          {faqData.map((faq, index) => (
+            <div key={index} className="faq-item">
+              <h4>{faq.question}</h4>
+              <p>{faq.answer}</p>
+            </div>
+          ))}
         </div>
       </div>
     </>
