@@ -4,24 +4,13 @@ import format from "date-fns/format";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 import ReadingProgressBar from "./ReadingProgressBar"; // Import the progress bar
-import Head from "next/head";
-import firebase from "../lib/firebase"; // Updated import path
 
 export default function PostContent({ post }) {
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
   const [loading, setLoading] = useState(true);
-  const [faqData, setFaqData] = useState([]); // State for storing FAQ data
 
   useEffect(() => {
-    // Fetch FAQ data from Firestore
-    const fetchFaqs = async () => {
-      const faqsRef = firebase.firestore().collection("faqs");
-      const snapshot = await faqsRef.get();
-      const faqs = snapshot.docs.map(doc => doc.data());
-      setFaqData(faqs); // Set FAQ data to state
-    };
-
     if (typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
     }
@@ -38,7 +27,6 @@ export default function PostContent({ post }) {
       }
     }
 
-    fetchFaqs(); // Fetch FAQ data when the post is loaded
     setLoading(false);
   }, [post]);
 
@@ -57,30 +45,11 @@ export default function PostContent({ post }) {
     }
   };
 
-  // FAQ Schema Markup
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqData.map(faq => ({
-      "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": faq.answer,
-      }
-    })),
-  };
-
   if (loading) return <div>Loading...</div>;
   if (!post) return <div>Post not found</div>;
 
   return (
     <>
-      <Head>
-        {/* Adding FAQ Schema Markup */}
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      </Head>
-
       <ReadingProgressBar /> {/* Add the reading progress bar here */}
 
       <div className="card">
@@ -101,7 +70,7 @@ export default function PostContent({ post }) {
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-          {/* Share buttons */}
+          {/* Facebook */}
           <a
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(post.title)}&u=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -113,6 +82,7 @@ export default function PostContent({ post }) {
             <FaFacebook size={16} />
           </a>
 
+          {/* Twitter */}
           <a
             href={`https://x.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -124,6 +94,7 @@ export default function PostContent({ post }) {
             <FaTwitter size={16} />
           </a>
 
+          {/* WhatsApp */}
           <a
             href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + currentUrl)}`}
             className="btn"
@@ -135,6 +106,7 @@ export default function PostContent({ post }) {
             <FaWhatsapp size={16} />
           </a>
 
+          {/* Telegram */}
           <a
             href={`https://t.me/share/url?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -146,6 +118,7 @@ export default function PostContent({ post }) {
             <FaTelegram size={16} />
           </a>
 
+          {/* Copy Link */}
           <button
             className="btn"
             style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
@@ -157,22 +130,6 @@ export default function PostContent({ post }) {
           >
             <FaCopy size={16} />
           </button>
-        </div>
-      </div>
-
-      <div className="card">
-        <h3>Frequently Asked Questions</h3>
-        <div className="faq-section">
-          {faqData.length === 0 ? (
-            <p>No FAQs available.</p>
-          ) : (
-            faqData.map((faq, index) => (
-              <div key={index} className="faq-item">
-                <h4>{faq.question}</h4>
-                <p>{faq.answer}</p>
-              </div>
-            ))
-          )}
         </div>
       </div>
     </>
