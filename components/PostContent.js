@@ -11,8 +11,17 @@ export default function PostContent({ post }) {
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
   const [loading, setLoading] = useState(true);
+  const [faqData, setFaqData] = useState([]); // State for storing FAQ data
 
   useEffect(() => {
+    // Fetch FAQ data from Firestore
+    const fetchFaqs = async () => {
+      const faqsRef = firebase.firestore().collection("faqs");
+      const snapshot = await faqsRef.get();
+      const faqs = snapshot.docs.map(doc => doc.data());
+      setFaqData(faqs); // Set FAQ data to state
+    };
+
     if (typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
     }
@@ -29,6 +38,7 @@ export default function PostContent({ post }) {
       }
     }
 
+    fetchFaqs(); // Fetch FAQ data when the post is loaded
     setLoading(false);
   }, [post]);
 
@@ -46,19 +56,6 @@ export default function PostContent({ post }) {
       return "[Invalid Date]";
     }
   };
-
-  // FAQ Data (You can replace this with dynamic data if required)
-  const faqData = [
-    {
-      question: "What is Devlog?",
-      answer: "Devlog is an open-source blogging platform for developers.",
-    },
-    {
-      question: "How do I sign up?",
-      answer: "You can sign up using Google, GitHub, or Facebook.",
-    },
-    // Add more FAQ items here as needed
-  ];
 
   // FAQ Schema Markup
   const faqSchema = {
@@ -166,12 +163,16 @@ export default function PostContent({ post }) {
       <div className="card">
         <h3>Frequently Asked Questions</h3>
         <div className="faq-section">
-          {faqData.map((faq, index) => (
-            <div key={index} className="faq-item">
-              <h4>{faq.question}</h4>
-              <p>{faq.answer}</p>
-            </div>
-          ))}
+          {faqData.length === 0 ? (
+            <p>No FAQs available.</p>
+          ) : (
+            faqData.map((faq, index) => (
+              <div key={index} className="faq-item">
+                <h4>{faq.question}</h4>
+                <p>{faq.answer}</p>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </>
