@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import styles from "./Search.module.css";
-import { FaSearch } from "react-icons/fa";
 import { db } from "../../lib/firebase"; // Firestore instance
 import { collection, query, where, getDocs } from "firebase/firestore";
 
@@ -14,8 +13,8 @@ export default function Search() {
         setResults([]);
         return;
       }
-      const postsRef = collection(db, "posts"); // Firestore collection
-      const q = query(postsRef, where("title", ">=", queryText)); // Search by title
+      const postsRef = collection(db, "posts"); 
+      const q = query(postsRef, where("title", ">=", queryText)); 
       const querySnapshot = await getDocs(q);
 
       const fetchedResults = querySnapshot.docs.map((doc) => ({
@@ -30,19 +29,13 @@ export default function Search() {
 
   return (
     <div className={styles.searchContainer}>
-      <div className={styles.searchBox}>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={queryText}
-          onChange={(e) => setQueryText(e.target.value)}
-          className={styles.input}
-        />
-        <button type="button" className={styles.button}>
-          <FaSearch />
-        </button>
-      </div>
-
+      <input
+        type="text"
+        placeholder="Search..."
+        value={queryText}
+        onChange={(e) => setQueryText(e.target.value)}
+        className={styles.input}
+      />
       {results.length > 0 && (
         <ul className={styles.results}>
           {results.map((post) => (
