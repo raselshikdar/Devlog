@@ -23,5 +23,9 @@ module.exports = {
         allow: '/',
       },
     ],
+    additionalSitemaps: [
+      'https://devlog.rweb.site/sitemap.xml',
+    ],
+    host: null, // Removes the "Host" entry
   },
 };
