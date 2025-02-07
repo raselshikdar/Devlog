@@ -50,6 +50,7 @@ export default function Metatags({
 
       {/* Google Search Verification */}
       <meta name="google-site-verification" content="QL7oyxAB-xfJ0bzZYvQAU9CnGNnbyUx8k7fGG5n7Srk" />
+      <meta name="yandex-verification" content="60a1409f14d404d5" />
     </Head>
   );
 }
