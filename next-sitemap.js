@@ -8,7 +8,7 @@ module.exports = {
   generateIndexSitemap: false,
   transform: async (config, url) => {
     const isHomepage = url === '/';
-    
+
     return {
       loc: new URL(url, config.siteUrl).toString(),
       lastmod: new Date().toISOString(),
@@ -26,6 +26,5 @@ module.exports = {
     additionalSitemaps: [
       'https://devlog.rweb.site/sitemap.xml',
     ],
-    host: null, // Removes the "Host" entry
   },
 };
