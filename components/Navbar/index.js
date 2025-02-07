@@ -4,10 +4,9 @@ import { UserContext } from "../../lib/context/userContext";
 import { ThemeContext } from "../../lib/context/themeContext";
 import { ImSun } from "react-icons/im";
 import { BiMoon } from "react-icons/bi";
-import { FiSearch } from "react-icons/fi";  // Import the search icon
 import s from "./Navbar.module.css";
-import Search from "../Search";  // Import the Search component
 
+// Top navbar
 export default function Navbar() {
   const { user, username } = useContext(UserContext);
   const { theme, changeTheme } = useContext(ThemeContext);
@@ -26,18 +25,10 @@ export default function Navbar() {
         </li>
 
         <li className="push-left">
-          {/* Search icon */}
-          <div className={s.searchIcon}>
-            <Search /> {/* Embed the Search component */}
-          </div>
-        </li>
-
-        <li className="push-left">
           <div onClick={handleThemeChange} className={s.switch}>
             {theme === "light" ? <BiMoon /> : <ImSun />}
           </div>
         </li>
-
         {/* user is signed-in and has username */}
         {username && (
           <>
