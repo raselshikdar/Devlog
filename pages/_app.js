@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import { Toaster } from "react-hot-toast";
 import ThemeProvider from "../lib/context/themeContext";
 import UserProvider from "../lib/context/userContext";
+import BackToTop from "../components/BackToTop/BackToTop"; // Import BackToTop
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }) {
         <Navbar />
         <Component {...pageProps} />
         <Footer />
+        <BackToTop /> {/* Added BackToTop button */}
         <Toaster />
       </ThemeProvider>
     </UserProvider>
