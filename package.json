@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "postbuild": "next-sitemap",
+    "postbuild": "next-sitemap && sed -i '/^Host:/d' public/robots.txt",
     "build-and-postbuild": "next build && next-sitemap"
   },
   "dependencies": {
