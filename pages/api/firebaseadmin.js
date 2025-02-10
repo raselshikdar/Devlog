@@ -1,28 +1,32 @@
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
 
 if (!admin.apps.length) {
+  // Initialize Firebase Admin SDK if it's not already initialized
   admin.initializeApp({
-    credential: admin.credential.cert({
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      projectId: process.env.FIREBASE_PROJECT_ID,
-    }),
+    credential: admin.credential.applicationDefault(), // Use your credentials here
+    databaseURL: process.env.FIREBASE_DATABASE_URL, // optional, if using Realtime Database
   });
+} else {
+  admin.app(); // If already initialized, use existing instance
 }
 
-const db = admin.firestore();
-
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    try {
-      // Example: Retrieve data from Firestore
-      const snapshot = await db.collection('users').get();
-      const users = snapshot.docs.map(doc => doc.data());
-      res.status(200).json({ users });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch data' });
-    }
-  } else {
-    res.status(405).json({ error: 'Method Not Allowed' });
+  try {
+    // Example of getting a list of users from Firebase Authentication
+    const users = [];
+    
+    // Fetch users with pagination (max 1000 users per request)
+    const listUsersResult = await admin.auth().listUsers(1000); // Adjust number as needed
+
+    // Extract users into a simple array
+    listUsersResult.users.forEach(userRecord => {
+      users.push(userRecord.toJSON());
+    });
+
+    // Return users as a response
+    res.status(200).json({ users });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
