@@ -5,10 +5,17 @@ import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 import ReadingProgressBar from "./ReadingProgressBar"; // Import the progress bar
 
+import remark from "remark";
+import remarkToc from "remark-toc";
+import html from "remark-html";
+import styles from "./ToC.module.css"; // Import ToC styles
+
 export default function PostContent({ post }) {
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
   const [loading, setLoading] = useState(true);
+  const [toc, setToc] = useState("");
+  const [showToc, setShowToc] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -25,10 +32,17 @@ export default function PostContent({ post }) {
         
         setPostTags(tags.length > 0 ? `{${tags.slice(0, 2).join(", ")}}` : "{Uncategorized}");
       }
+
+      generateTableOfContents(post.content);
     }
 
     setLoading(false);
   }, [post]);
+
+  const generateTableOfContents = async (markdown) => {
+    const processedContent = await remark().use(remarkToc).use(html).process(markdown);
+    setToc(processedContent.toString());
+  };
 
   const getFormattedDate = () => {
     try {
@@ -51,6 +65,16 @@ export default function PostContent({ post }) {
   return (
     <>
       <ReadingProgressBar /> {/* Add the reading progress bar here */}
+
+      {/* ToC Toggle Button */}
+      <button className={styles.tocButton} onClick={() => setShowToc(!showToc)}>
+        {showToc ? "Hide ToC" : "Show ToC"}
+      </button>
+
+      {/* Table of Contents */}
+      {showToc && (
+        <div className={styles.tableOfContents} dangerouslySetInnerHTML={{ __html: toc }} />
+      )}
 
       <div className="card">
         <h1>{post?.title || "Untitled Post"}</h1>
