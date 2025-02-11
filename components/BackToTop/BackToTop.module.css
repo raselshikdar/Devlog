@@ -1,20 +1,20 @@
 .button {
   position: fixed;
-  bottom: 8px;  /* Reduced bottom spacing */
-  right: 8px;   /* Reduced right spacing */
+  bottom: 15px;
+  right: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #1dd1a1;
   color: white;
   border: none;
-  font-size: 8px;  /* Smaller font size */
+  font-size: 12px;  /* Smaller font size */
   cursor: pointer;
   transition: opacity 0.3s, transform 0.2s, background-color 0.3s;
   opacity: 0.8;
-  padding: 4px 6px;  /* Thinner padding */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);  /* Subtle shadow */
-  border-radius: 8px;  /* Rounded rectangle for desktop */
+  padding: 8px 10px;  /* Thinner padding */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);  /* Subtle 3D effect */
+  border-radius: 15px;  /* Rounded rectangle for desktop */
 }
 
 .button:hover {
@@ -37,19 +37,19 @@
 
 @media (max-width: 600px) {
   .button {
-    width: 24px;  /* Even smaller width */
-    height: 24px;  /* Even smaller height */
-    font-size: 6px;  /* Very small font size for mobile */
-    bottom: 6px;  /* Reduced bottom position */
-    right: 6px;   /* Reduced right position */
-    padding: 2px 4px;  /* Very thin padding */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);  /* Very subtle shadow */
-    border-radius: 3px;  /* Smaller rounded square for mobile */
+    width: 35px;  /* Even smaller width for mobile */
+    height: 35px;  /* Even smaller height for mobile */
+    font-size: 10px;  /* Smaller font size for mobile */
+    bottom: 10px;  /* Adjusted bottom position */
+    right: 10px;  /* Adjusted right position */
+    padding: 6px 8px;  /* Thinner padding for mobile */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);  /* Subtle 3D shadow for mobile */
+    border-radius: 6px;  /* Rounded square for mobile */
   }
 
   .icon {
     display: inline-block;
-    font-size: 8px;  /* Smaller icon size */
+    font-size: 14px;  /* Even smaller icon size */
   }
 
   .text {
