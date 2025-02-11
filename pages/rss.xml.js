@@ -1,4 +1,3 @@
-// pages/rss.xml.js
 import { db } from '../lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import RSS from 'rss';
@@ -21,9 +20,18 @@ export async function getServerSideProps({ res }) {
     );
     const postsSnapshot = await getDocs(postsQuery);
 
+    // Log the fetched posts to verify
+    if (postsSnapshot.empty) {
+      console.log("No posts found.");
+    }
+
     // Add items to feed
     postsSnapshot.forEach((doc) => {
       const data = doc.data();
+
+      // Log post data to verify
+      console.log("Adding post:", data);
+
       feed.item({
         title: data.title,
         description: data.description,
