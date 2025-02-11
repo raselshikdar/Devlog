@@ -25,6 +25,7 @@ module.exports = {
     ],
     additionalSitemaps: [
       'https://devlog.rweb.site/sitemap.xml',
+      'https://devlog.rweb.site/rss.xml',  // Added RSS feed URL here
     ],
   },
 };
