@@ -85,9 +85,10 @@ export default function PostContent({ post }) {
 
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
         
-        <MarkdownPreview content={post?.content} />
+        {/* Post Description (without header) */}
+        <MarkdownPreview content={post?.content.split("#")[0]} />
 
-        {/* Show ToC Button */}
+        {/* Show ToC Button (after description, before first header) */}
         <button 
           className={styles.tocButton} 
           onClick={() => setShowToc(!showToc)} 
@@ -105,6 +106,9 @@ export default function PostContent({ post }) {
             dangerouslySetInnerHTML={{ __html: toc }} 
           />
         )}
+
+        {/* Post Content after the description, starting from the first header */}
+        <MarkdownPreview content={post?.content.substring(post?.content.indexOf("#"))} />
       </div>
 
       <div className="card">
