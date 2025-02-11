@@ -38,18 +38,20 @@
 
 @media (max-width: 600px) {
   .button {
-    width: 45px;
-    height: 45px;
-    font-size: 22px;
-    bottom: 15px;
-    right: 15px;
+    width: 35px;
+    height: 35px;
+    font-size: 18px;  /* Smaller font size */
+    bottom: 10px;
+    right: 10px;
     padding: 0;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);  /* Lighter shadow for a more subtle effect */
   }
 
   .icon {
     display: inline-block;
+    font-size: 20px;  /* Adjust icon size for better proportion */
   }
 
   .text {
