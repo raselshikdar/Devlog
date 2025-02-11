@@ -21,7 +21,10 @@ const BackToTop = () => {
   return (
     visible && (
       <button className={styles.button} onClick={scrollToTop} aria-label="Back to Top">
-        <FaArrowUp />
+        <span className={styles.icon}>
+          <FaArrowUp />
+        </span>
+        <span className={styles.text}>Back to Top ⬆️</span>
       </button>
     )
   );
