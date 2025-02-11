@@ -13,19 +13,20 @@ export async function getServerSideProps({ res }) {
       title: data.title,  // Assuming 'title' field in Firestore
       description: data.description,  // Assuming 'description' field in Firestore
       slug: data.slug,  // Assuming 'slug' field in Firestore
+      username: data.username,  // Assuming 'username' field in Firestore
       date: data.createdAt.toDate(),  // Assuming 'createdAt' field is a Firestore Timestamp
     };
   });
 
   // Create the RSS feed using next-rss
   const rss = new RSS({
-    title: 'Devlog RSS Feed',  // Title of your site
+    title: 'Devlog Blog',  // Title of your site
     description: 'Latest posts from Devlog',  // Description of your site
     site: 'https://devlog.rweb.site',  // Your site URL
     items: posts.map(post => ({
       title: post.title,
       description: post.description,
-      url: `https://devlog.rweb.site/${post.slug}`,  // URL for the post
+      url: `https://devlog.rweb.site/${post.username}/${post.slug}`,  // URL with username and slug
       date: post.date,  // Date of the post
     })),
   });
