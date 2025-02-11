@@ -44,7 +44,11 @@ export default function PostContent({ post }) {
 
   const generateTableOfContents = async (markdown) => {
     const processedContent = await remark().use(remarkToc).use(html).process(markdown);
-    setToc(processedContent.toString());
+    const tocContent = processedContent.toString();
+    setToc(tocContent);
+
+    // Log the ToC content for debugging
+    console.log("Generated ToC:", tocContent);
   };
 
   const getFormattedDate = () => {
@@ -75,7 +79,7 @@ export default function PostContent({ post }) {
       </button>
 
       {/* Table of Contents */}
-      {showToc && (
+      {showToc && toc && (
         <div className={styles.tableOfContents} dangerouslySetInnerHTML={{ __html: toc }} />
       )}
 
@@ -97,6 +101,7 @@ export default function PostContent({ post }) {
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
+          {/* Share buttons */}
           {/* Facebook */}
           <a
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(post.title)}&u=${encodeURIComponent(currentUrl)}`}
