@@ -1,3 +1,4 @@
+import Head from "next/head";
 import "../styles/globals.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Navbar from "../components/Navbar";
@@ -11,6 +12,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <UserProvider>
       <ThemeProvider>
+        <Head>
+          <link rel="alternate" type="application/rss+xml" title="Devlog RSS" href="/rss.xml" />
+        </Head>
         <Navbar />
         <Component {...pageProps} />
         <Footer />
