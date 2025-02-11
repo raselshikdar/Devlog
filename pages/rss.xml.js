@@ -1,46 +1,43 @@
-import { db } from "../lib/firebase"; // Firestore instance
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import RSS from "rss";
+// pages/rss.xml.js
+import RSS from 'next-rss';
+import { db, collection, getDocs } from '../lib/firebase';  // Import Firestore functions
 
 export async function getServerSideProps({ res }) {
-  try {
-    const feed = new RSS({
-      title: "Devlog RSS Feed",
-      description: "Latest posts from Devlog",
-      site_url: "https://devlog.rweb.site",
-      feed_url: "https://devlog.rweb.site/rss.xml",
-      language: "en",
-    });
+  // Fetch the posts collection from Firestore
+  const postsSnapshot = await getDocs(collection(db, 'posts'));  // 'posts' collection in Firestore
 
-    // Fetch posts from Firestore and sort by 'createdAt' in descending order
-    const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-    const postsSnapshot = await getDocs(postsQuery);
+  // Map the fetched posts into an array of post objects
+  const posts = postsSnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      title: data.title,  // Assuming 'title' field in Firestore
+      description: data.description,  // Assuming 'description' field in Firestore
+      slug: data.slug,  // Assuming 'slug' field in Firestore
+      date: data.createdAt.toDate(),  // Assuming 'createdAt' field is a Firestore Timestamp
+    };
+  });
 
-    postsSnapshot.forEach((doc) => {
-      const post = doc.data();
-      feed.item({
-        title: post.title,
-        description: post.description,
-        url: `https://devlog.rweb.site/${post.username}/${post.slug}`, // Adjusted URL structure
-        date: post.createdAt.toDate(),
-        author: post.username, // Assuming 'username' is the field for the author
-        custom_elements: [{ 'content:encoded': post.content }] // Optional: Include post content if needed
-      });
-    });
+  // Create the RSS feed using next-rss
+  const rss = new RSS({
+    title: 'Devlog RSS Feed',  // Title of your site
+    description: 'Latest posts from Devlog',  // Description of your site
+    site: 'https://devlog.rweb.site',  // Your site URL
+    items: posts.map(post => ({
+      title: post.title,
+      description: post.description,
+      url: `https://devlog.rweb.site/${post.slug}`,  // URL for the post
+      date: post.date,  // Date of the post
+    })),
+  });
 
-    // Set response headers to indicate XML content
-    res.setHeader("Content-Type", "application/xml");
-    res.write(feed.xml()); // Send the RSS feed XML
-    res.end();
+  // Set the content-type header to application/rss+xml
+  res.setHeader('Content-Type', 'application/rss+xml');
+  res.write(rss.xml());  // Generate and send the RSS XML content
+  res.end();
 
-    return { props: {} }; // No props needed
-  } catch (error) {
-    console.error("Error generating RSS feed:", error);
-    res.status(500).end(); // Return a 500 error if there's a problem
-    return { props: {} };
-  }
+  return { props: {} };
 }
 
-export default function RssPage() {
-  return null; // The page itself doesn't render anything
+export default function RSS() {
+  return null;  // No need to render anything
 }
