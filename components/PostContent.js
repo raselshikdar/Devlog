@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 import ReadingProgressBar from "./ReadingProgressBar"; // Import the progress bar
 
-import remark from "remark";
-import remarkToc from "remark-toc";
-import html from "remark-html";
+// Dynamically import remark and related libraries to prevent SSR issues
+import dynamic from "next/dynamic";
 import styles from "./ToC.module.css"; // Import ToC styles
+
+const remark = dynamic(() => import("remark"), { ssr: false });
+const remarkToc = dynamic(() => import("remark-toc"), { ssr: false });
+const html = dynamic(() => import("remark-html"), { ssr: false });
 
 export default function PostContent({ post }) {
   const [currentUrl, setCurrentUrl] = useState("");
