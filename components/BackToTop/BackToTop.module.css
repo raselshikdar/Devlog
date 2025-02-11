@@ -8,13 +8,13 @@
   background-color: #1dd1a1;
   color: white;
   border: none;
-  border-radius: 50%;
   font-size: 14px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   transition: opacity 0.3s, transform 0.2s, background-color 0.3s;
   opacity: 0.8;
-  padding: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);  /* 3D effect */
+  border-radius: 20px;  /* Rounded rectangle */
 }
 
 .button:hover {
@@ -37,13 +37,14 @@
 
 @media (max-width: 600px) {
   .button {
-    width: 25px;  /* Smaller width */
-    height: 25px;  /* Smaller height */
+    width: 40px;  /* Smaller width for mobile */
+    height: 40px;  /* Smaller height for mobile */
     font-size: 12px;  /* Smaller font size */
     bottom: 10px;  /* Adjusted bottom position */
     right: 10px;  /* Adjusted right position */
-    padding: 0;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+    padding: 8px;  /* Adjust padding */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);  /* Subtle 3D shadow */
+    border-radius: 8px;  /* Rounded square for mobile */
   }
 
   .icon {
