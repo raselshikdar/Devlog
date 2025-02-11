@@ -39,6 +39,6 @@ export async function getServerSideProps({ res }) {
   return { props: {} };
 }
 
-export default function RSS() {
+export default function RSSFeed() {
   return null;  // No need to render anything
 }
