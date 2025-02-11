@@ -73,16 +73,6 @@ export default function PostContent({ post }) {
     <>
       <ReadingProgressBar /> {/* Add the reading progress bar here */}
 
-      {/* ToC Toggle Button */}
-      <button className={styles.tocButton} onClick={() => setShowToc(!showToc)}>
-        {showToc ? "Hide ToC" : "Show ToC"}
-      </button>
-
-      {/* Table of Contents */}
-      {showToc && toc && (
-        <div className={styles.tableOfContents} dangerouslySetInnerHTML={{ __html: toc }} />
-      )}
-
       <div className="card">
         <h1>{post?.title || "Untitled Post"}</h1>
         <span className="text-sm">
@@ -94,8 +84,27 @@ export default function PostContent({ post }) {
         </span>
 
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
-
+        
         <MarkdownPreview content={post?.content} />
+
+        {/* Show ToC Button */}
+        <button 
+          className={styles.tocButton} 
+          onClick={() => setShowToc(!showToc)} 
+          aria-label="Toggle Table of Contents"
+          style={{ marginTop: "1rem", padding: "0.5rem 1rem", backgroundColor: "#1dd1a1", color: "white", border: "none", cursor: "pointer" }}
+        >
+          {showToc ? "Hide ToC" : "Show ToC"}
+        </button>
+
+        {/* ToC Section (Hidden by default, will expand on button click) */}
+        {showToc && toc && (
+          <div 
+            className={styles.tableOfContents} 
+            style={{ marginTop: "1rem", borderTop: "2px solid #1dd1a1" }}
+            dangerouslySetInnerHTML={{ __html: toc }} 
+          />
+        )}
       </div>
 
       <div className="card">
