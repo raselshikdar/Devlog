@@ -5,20 +5,10 @@ import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 import ReadingProgressBar from "./ReadingProgressBar"; // Import the progress bar
 
-// Dynamically import remark and related libraries to prevent SSR issues
-import dynamic from "next/dynamic";
-import styles from "./ToC.module.css"; // Import ToC styles
-
-const remark = dynamic(() => import("remark"), { ssr: false });
-const remarkToc = dynamic(() => import("remark-toc"), { ssr: false });
-const html = dynamic(() => import("remark-html"), { ssr: false });
-
 export default function PostContent({ post }) {
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
   const [loading, setLoading] = useState(true);
-  const [toc, setToc] = useState("");
-  const [showToc, setShowToc] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -35,21 +25,10 @@ export default function PostContent({ post }) {
         
         setPostTags(tags.length > 0 ? `{${tags.slice(0, 2).join(", ")}}` : "{Uncategorized}");
       }
-
-      generateTableOfContents(post.content);
     }
 
     setLoading(false);
   }, [post]);
-
-  const generateTableOfContents = async (markdown) => {
-    const processedContent = await remark().use(remarkToc).use(html).process(markdown);
-    const tocContent = processedContent.toString();
-    setToc(tocContent);
-
-    // Log the ToC content for debugging
-    console.log("Generated ToC:", tocContent);
-  };
 
   const getFormattedDate = () => {
     try {
@@ -84,37 +63,13 @@ export default function PostContent({ post }) {
         </span>
 
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
-        
-        {/* Post Description (without header) */}
-        <MarkdownPreview content={post?.content.split("#")[0]} />
 
-        {/* Show ToC Button (after description, before first header) */}
-        <button 
-          className={styles.tocButton} 
-          onClick={() => setShowToc(!showToc)} 
-          aria-label="Toggle Table of Contents"
-          style={{ marginTop: "1rem", padding: "0.5rem 1rem", backgroundColor: "#1dd1a1", color: "white", border: "none", cursor: "pointer" }}
-        >
-          {showToc ? "Hide ToC" : "Show ToC"}
-        </button>
-
-        {/* ToC Section (Hidden by default, will expand on button click) */}
-        {showToc && toc && (
-          <div 
-            className={styles.tableOfContents} 
-            style={{ marginTop: "1rem", borderTop: "2px solid #1dd1a1" }}
-            dangerouslySetInnerHTML={{ __html: toc }} 
-          />
-        )}
-
-        {/* Post Content after the description, starting from the first header */}
-        <MarkdownPreview content={post?.content.substring(post?.content.indexOf("#"))} />
+        <MarkdownPreview content={post?.content} />
       </div>
 
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-          {/* Share buttons */}
           {/* Facebook */}
           <a
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(post.title)}&u=${encodeURIComponent(currentUrl)}`}
