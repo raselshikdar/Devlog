@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; 
 import ReadingProgressBar from "./ReadingProgressBar"; 
 
-const TableOfContents = ({ headings }) => { 
+const TableOfContents = ({ headings, nightMode }) => { 
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => { 
@@ -13,15 +13,46 @@ const TableOfContents = ({ headings }) => {
   };
 
   return ( 
-    <div style={{ margin: "1rem 0", border: "1px solid #eaeaea", borderRadius: "8px", cursor: "pointer", backgroundColor: isExpanded ? "#f8f8f8" : "#fff", overflow: "hidden", }} onClick={toggleExpand} > 
-      <div style={{ padding: "0.75rem 1rem", fontWeight: "600", backgroundColor: "#f0f0f0", display: "flex", justifyContent: "space-between", alignItems: "center", }} > 
-        <span>📚 Table of Contents</span> 
-        <span style={{ transition: "transform 0.2s", transform: `rotate(${isExpanded ? 90 : 0}deg)` }}> ▶ </span> 
+    <div style={{ 
+      margin: "1rem 0", 
+      border: nightMode ? "1px solid #444" : "1px solid #eaeaea", 
+      borderRadius: "8px", 
+      cursor: "pointer", 
+      backgroundColor: isExpanded ? (nightMode ? "#333" : "#f8f8f8") : (nightMode ? "#222" : "#fff"), 
+      overflow: "hidden", 
+    }} onClick={toggleExpand} > 
+      <div style={{ 
+        padding: "0.75rem 1rem", 
+        fontWeight: "600", 
+        backgroundColor: nightMode ? "#444" : "#f0f0f0", 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center", 
+      }} > 
+        <span style={{ color: nightMode ? "#fff" : "#000" }}>📚 Table of Contents</span> 
+        <span style={{ 
+          transition: "transform 0.2s", 
+          transform: `rotate(${isExpanded ? 90 : 0}deg)`, 
+          color: nightMode ? "#fff" : "#000" 
+        }}> ▶ </span> 
       </div> 
       {isExpanded && ( 
-        <div style={{ padding: "1rem", maxHeight: "400px", overflowY: "auto", }} > 
+        <div style={{ 
+          padding: "1rem", 
+          maxHeight: "400px", 
+          overflowY: "auto", 
+          backgroundColor: nightMode ? "#222" : "#fff", 
+        }} > 
           {headings.map((heading, index) => ( 
-            <a key={index} href={`#${heading.slug}`} style={{ display: "block", fontSize: "0.9rem", padding: "0.3rem 0", paddingLeft: `${(heading.level - 1) * 20}px`, color: "#0070f3", textDecoration: "none", transition: "all 0.2s", }} onClick={(e) => e.stopPropagation()} onMouseOver={(e) => (e.target.style.color = "#ff0070")} onMouseOut={(e) => (e.target.style.color = "#0070f3")} > 
+            <a key={index} href={`#${heading.slug}`} style={{ 
+              display: "block", 
+              fontSize: "0.9rem", 
+              padding: "0.3rem 0", 
+              paddingLeft: `${(heading.level - 1) * 20}px`, 
+              color: nightMode ? "#1e90ff" : "#0070f3", 
+              textDecoration: "none", 
+              transition: "all 0.2s", 
+            }} onClick={(e) => e.stopPropagation()} onMouseOver={(e) => (e.target.style.color = nightMode ? "#ff0070" : "#ff0070")} onMouseOut={(e) => (e.target.style.color = nightMode ? "#1e90ff" : "#0070f3")} > 
               {heading.text} 
             </a> 
           ))} 
@@ -31,7 +62,7 @@ const TableOfContents = ({ headings }) => {
   ); 
 };
 
-export default function PostContent({ post }) { 
+export default function PostContent({ post, nightMode }) { 
   const [currentUrl, setCurrentUrl] = useState(""); 
   const [postTags, setPostTags] = useState("{Uncategorized}"); 
   const [loading, setLoading] = useState(true); 
@@ -53,7 +84,7 @@ export default function PostContent({ post }) {
           .map((tag) => tag.trim())
           .filter((tag) => tag);
 
-        setPostTags(tags.length > 0 ? `{${tags.slice(0, 2).join(", ")}}` : "{Uncategorized}");
+        setPostTags (tags.length > 0 ? `{${tags.slice(0, 2).join(", ")}}` : "{Uncategorized}");
       }
 
       // Process headings and split content
@@ -84,7 +115,7 @@ export default function PostContent({ post }) {
       } else {
         const greetingLines = lines.slice(0, firstHeadingIndex);
         const mainLines = lines.slice(firstHeadingIndex);
- setGreetingContent(greetingLines.join("\n"));
+        setGreetingContent(greetingLines.join("\n"));
         setMainContent(mainLines.join("\n"));
       }
     }
@@ -119,7 +150,7 @@ export default function PostContent({ post }) {
         </span>
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
         <MarkdownPreview content={greetingContent} />
-        {headings.length > 0 && <TableOfContents headings={headings} />}
+        {headings.length > 0 && <TableOfContents headings={headings} nightMode={nightMode} />}
         <MarkdownPreview content={mainContent} />
       </div>
       <div className="card">
@@ -161,7 +192,7 @@ export default function PostContent({ post }) {
           {/* Telegram */}
           <a
             href={`https://t.me/share/url?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
-            className="btn"
+            className=" btn"
             style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
@@ -185,4 +216,4 @@ export default function PostContent({ post }) {
       </div>
     </>
   ); 
-}
+} 
