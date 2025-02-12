@@ -1,81 +1,88 @@
-import Link from "next/link"; 
-import MarkdownPreview from "./MarkdownPreview"; 
-import format from "date-fns/format"; 
-import { useEffect, useState } from "react"; 
-import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; 
-import ReadingProgressBar from "./ReadingProgressBar"; 
+import Link from "next/link";
+import Head from "next/head";
+import MarkdownPreview from "./MarkdownPreview";
+import format from "date-fns/format";
+import { useEffect, useState } from "react";
+import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
+import ReadingProgressBar from "./ReadingProgressBar";
 
-const TableOfContents = ({ headings, nightMode }) => { 
+const TableOfContents = ({ headings, nightMode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpand = () => { 
-    setIsExpanded(!isExpanded); 
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
   };
 
-  return ( 
-    <div style={{ 
-      margin: "1rem 0", 
-      border: nightMode ? "1px solid #444" : "1px solid #eaeaea", 
-      borderRadius: "8px", 
-      cursor: "pointer", 
-      backgroundColor: isExpanded ? (nightMode ? "#444" : "#f8f8f8") : (nightMode ? "#ccc" : "#fff"), // Dark gray for expanded in night mode
-      overflow: "hidden", 
-    }} onClick={toggleExpand} > 
-      <div style={{ 
-        padding: "0.75rem 1rem", 
-        fontWeight: "600", 
-        backgroundColor: nightMode ? "#444" : "#f0f0f0", 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center", 
-      }} > 
-        <span style={{ color: nightMode ? "#fff" : "#000" }}>📚 Table of Contents</span> 
-        <span style={{ 
-          transition: "transform 0.2s", 
-          transform: `rotate(${isExpanded ? 90 : 0}deg)`, 
-          color: nightMode ? "#fff" : "#000" 
-        }}> ▶ </span> 
-      </div> 
-      {isExpanded && ( 
-        <div style={{ 
-          padding: "1rem", 
-          maxHeight: "400px", 
-          overflowY: "auto", 
-          backgroundColor: nightMode ? "#222" : "#fff", 
-        }} > 
-          {headings.map((heading, index) => ( 
-            <a key={index} href={`#${heading.slug}`} style={{ 
-              display: "block", 
-              fontSize: "0.9rem", 
-              padding: "0.3rem 0", 
-              paddingLeft: `${(heading.level - 1) * 20}px`, 
-              color: nightMode ? "#1e90ff" : "#0070f3", 
-              textDecoration: "none", 
-              transition: "all 0.2s", 
-            }} onClick={(e) => e.stopPropagation()} onMouseOver={(e) => (e.target.style.color = nightMode ? "#ff0070" : "#ff0070")} onMouseOut={(e) => (e.target.style.color = nightMode ? "#1e90ff" : "#0070f3")} > 
-              {heading.text} 
-            </a> 
-          ))} 
-        </div> 
-      )} 
-    </div> 
-  ); 
+  return (
+    <div style={{
+      margin: "1rem 0",
+      border: nightMode ? "1px solid #444" : "1px solid #eaeaea",
+      borderRadius: "8px",
+      cursor: "pointer",
+      backgroundColor: isExpanded ? (nightMode ? "#444" : "#f8f8f8") : (nightMode ? "#ccc" : "#fff"),
+      overflow: "hidden",
+    }} onClick={toggleExpand}>
+      <div style={{
+        padding: "0.75rem 1rem",
+        fontWeight: "600",
+        backgroundColor: nightMode ? "#444" : "#f0f0f0",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}>
+        <span style={{ color: nightMode ? "#fff" : "#000" }}>📚 Table of Contents</span>
+        <span style={{
+          transition: "transform 0.2s",
+          transform: `rotate(${isExpanded ? 90 : 0}deg)`,
+          color: nightMode ? "#fff" : "#000"
+        }}> ▶ </span>
+      </div>
+      {isExpanded && (
+        <div style={{
+          padding: "1rem",
+          maxHeight: "400px",
+          overflowY: "auto",
+          backgroundColor: nightMode ? "#222" : "#fff",
+        }}>
+          {headings.map((heading, index) => (
+            <a key={index} href={`#${heading.slug}`} style={{
+              display: "block",
+              fontSize: "0.9rem",
+              padding: "0.3rem 0",
+              paddingLeft: `${(heading.level - 1) * 20}px`,
+              color: nightMode ? "#1e90ff" : "#0070f3",
+              textDecoration: "none",
+              transition: "all 0.2s",
+            }} onClick={(e) => e.stopPropagation()} onMouseOver={(e) => (e.target.style.color = nightMode ? "#ff0070" : "#ff0070")} onMouseOut={(e) => (e.target.style.color = nightMode ? "#1e90ff" : "#0070f3")}>
+              {heading.text}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
-export default function PostContent({ post, nightMode }) { 
-  const [currentUrl, setCurrentUrl] = useState(""); 
-  const [postTags, setPostTags] = useState("{Uncategorized}"); 
-  const [loading, setLoading] = useState(true); 
-  const [headings, setHeadings] = useState([]); 
-  const [greetingContent, setGreetingContent] = useState(""); 
+export default function PostContent({ post, nightMode }) {
+  const [currentUrl, setCurrentUrl] = useState("");
+  const [postTags, setPostTags] = useState("{Uncategorized}");
+  const [loading, setLoading] = useState(true);
+  const [headings, setHeadings] = useState([]);
+  const [greetingContent, setGreetingContent] = useState("");
   const [mainContent, setMainContent] = useState("");
+  const [firstImageUrl, setFirstImageUrl] = useState("");
 
-  useEffect(() => { 
-    if (typeof window !== "undefined") { 
-      setCurrentUrl(window.location.href); 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href);
     }
 
     if (post?.content) {
+      // Extract first image from content
+      const imageRegex = /!\[.*?\]\((.*?)\)/;
+      const imageMatch = post.content.match(imageRegex);
+      if (imageMatch) setFirstImageUrl(imageMatch[1]);
+
       // Process tags
       const tagMatch = post.content.match(/Tags:\s*([\w\s,]+)/i);
       if (tagMatch) {
@@ -89,7 +96,7 @@ export default function PostContent({ post, nightMode }) {
 
       // Process headings and split content
       const lines = post.content.split("\n");
-      let firstHeadingIndex = -1; // Corrected variable name
+      let firstHeadingIndex = -1;
       const extractedHeadings = [];
 
       for (let i = 0; i < lines.length; i++) {
@@ -128,7 +135,7 @@ export default function PostContent({ post, nightMode }) {
       const createdAt = post?.createdAt ? (typeof post.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate()) : new Date();
       return format(createdAt, "eeee MMM dd, yyyy - h:mm a");
     } catch (e) {
-      console.error(" Date formatting error:", e);
+      console.error("Date formatting error:", e);
       return "[Invalid Date]";
     }
   };
@@ -138,6 +145,14 @@ export default function PostContent({ post, nightMode }) {
 
   return (
     <>
+      <Head>
+        <meta property="og:image" content={firstImageUrl} />
+        <meta name="twitter:image" content={firstImageUrl} />
+        <meta property="og:title" content={post?.title || "Untitled Post"} />
+        <meta property="og:url" content={currentUrl} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Head>
+
       <ReadingProgressBar />
       <div className="card">
         <h1>{post?.title || "Untitled Post"}</h1>
@@ -153,6 +168,7 @@ export default function PostContent({ post, nightMode }) {
         {headings.length > 0 && <TableOfContents headings={headings} nightMode={nightMode} />}
         <MarkdownPreview content={mainContent} />
       </div>
+
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
@@ -210,5 +226,5 @@ export default function PostContent({ post, nightMode }) {
         </div>
       </div>
     </>
-  ); 
+  );
 }
