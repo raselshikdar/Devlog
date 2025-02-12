@@ -11,6 +11,12 @@ const MarkdownPreview = ({ content }) => {
     toast.success("copied to clipboard");
   };
 
+  const headingRenderer = ({ level, children }) => {
+    const text = children[0]; // Assuming the heading text is the first child
+    const slug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+    return React.createElement(`h${level}`, { id: slug }, children);
+  };
+
   return (
     <ReactMarkdown
       children={content}
@@ -38,6 +44,13 @@ const MarkdownPreview = ({ content }) => {
             />
           );
         },
+        // Add the heading renderer here
+        h1: headingRenderer,
+        h2: headingRenderer,
+        h3: headingRenderer,
+        h4: headingRenderer,
+        h5: headingRenderer,
+        h6: headingRenderer,
       }}
     />
   );
