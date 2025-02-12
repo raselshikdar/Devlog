@@ -11,6 +11,7 @@ const MarkdownPreview = ({ content }) => {
     toast.success("copied to clipboard");
   };
 
+  // Custom heading renderer to add IDs
   const headingRenderer = ({ level, children }) => {
     const text = children[0]; // Assuming the heading text is the first child
     const slug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
