@@ -2,60 +2,81 @@ import { Code, CopyBlock, dracula } from "react-code-blocks";
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useState } from "react"; // For managing TOC state
 
 import { supportedLanguages } from "./supportedLangs";
 import s from "./MDstyles.module.css";
 
 const MarkdownPreview = ({ content }) => {
+  const [toc, setToc] = useState([]);
+
   const notifyOnCopy = () => {
     toast.success("Copied to clipboard");
   };
 
-  // Custom heading renderer to add IDs
+  // Custom heading renderer to add IDs and build TOC
   const headingRenderer = ({ level, children }) => {
     const text = React.Children.toArray(children)
-      .map(child => (typeof child === 'string' ? child : child.props.children))
-      .join('');
-    const slug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+      .map(child => (typeof child === "string" ? child : child.props.children))
+      .join("");
+    const slug = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
+    
+    // Update TOC state
+    setToc(prevToc => [
+      ...prevToc,
+      { level, text, slug }
+    ]);
+
     return React.createElement(`h${level}`, { id: slug }, children);
   };
 
   return (
-    <ReactMarkdown
-      children={content}
-      className={s.reactMarkdown}
-      remarkPlugins={[remarkGfm]}
-      components={{
-        code({ inline, className, children }) {
-          const match = /language-(\w+)/.exec(className || "");
-          let codeLang = "text";
-          if (match) {
-            codeLang = supportedLanguages.includes(match[1])
-              ? match[1]
-              : "text";
-          }
-          return inline && !match ? (
-            <Code text={children[0]} language={codeLang} theme={dracula} />
-          ) : (
-            <CopyBlock
-              text={children[0]}
-              showLineNumbers
-              theme={dracula}
-              codeBlock
-              onCopy={notifyOnCopy}
-              language={codeLang}
-            />
-          );
-        },
-        // Add the heading renderer here
-        h1: headingRenderer,
-        h2: headingRenderer,
-        h3: headingRenderer,
-        h4: headingRenderer,
-        h5: headingRenderer,
-        h6: headingRenderer,
-      }}
-    />
+    <div className={s.previewContainer}>
+      {/* Table of Contents */}
+      <nav className={s.toc}>
+        <ul>
+          {toc.map((item, index) => (
+            <li key={index} style={{ marginLeft: `${(item.level - 1) * 20}px` }}>
+              <a href={`#${item.slug}`}>{item.text}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* Markdown Content */}
+      <ReactMarkdown
+        children={content}
+        className={s.reactMarkdown}
+        remarkPlugins={[remarkGfm]}
+        components={{
+          code({ inline, className, children }) {
+            const match = /language-(\w+)/.exec(className || "");
+            let codeLang = "text";
+            if (match) {
+              codeLang = supportedLanguages.includes(match[1]) ? match[1] : "text";
+            }
+            return inline && !match ? (
+              <Code text={children[0]} language={codeLang} theme={dracula} />
+            ) : (
+              <CopyBlock
+                text={children[0]}
+                showLineNumbers
+                theme={dracula}
+                codeBlock
+                onCopy={notifyOnCopy}
+                language={codeLang}
+              />
+            );
+          },
+          h1: headingRenderer,
+          h2: headingRenderer,
+          h3: headingRenderer,
+          h4: headingRenderer,
+          h5: headingRenderer,
+          h6: headingRenderer,
+        }}
+      />
+    </div>
   );
 };
 
