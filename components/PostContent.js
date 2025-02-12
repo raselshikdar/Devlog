@@ -18,7 +18,7 @@ const TableOfContents = ({ headings, nightMode }) => {
       border: nightMode ? "1px solid #444" : "1px solid #eaeaea", 
       borderRadius: "8px", 
       cursor: "pointer", 
-      backgroundColor: isExpanded ? (nightMode ? "#ccc" : "#f8f8f8") : (nightMode ? "#ccc" : "#fff"), // Ash color for night mode
+      backgroundColor: isExpanded ? (nightMode ? "#444" : "#f8f8f8") : (nightMode ? "#ccc" : "#fff"), // Dark gray for expanded in night mode
       overflow: "hidden", 
     }} onClick={toggleExpand} > 
       <div style={{ 
