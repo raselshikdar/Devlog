@@ -1,91 +1,47 @@
-components/PostContent.js
+import Link from "next/link"; 
+import MarkdownPreview from "./MarkdownPreview"; 
+import format from "date-fns/format"; 
+import { useEffect, useState } from "react"; 
+import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa"; 
+import ReadingProgressBar from "./ReadingProgressBar"; 
 
-import Link from "next/link";
-import MarkdownPreview from "./MarkdownPreview";
-import format from "date-fns/format";
-import { useEffect, useState } from "react";
-import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
-import ReadingProgressBar from "./ReadingProgressBar";
-
-const TableOfContents = ({ headings }) => {
+const TableOfContents = ({ headings }) => { 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
+  const toggleExpand = () => { 
+    setIsExpanded(!isExpanded); 
   };
 
-  return (
-    <div
-      style={{
-        margin: "1rem 0",
-        border: "1px solid #eaeaea",
-        borderRadius: "8px",
-        cursor: "pointer",
-        backgroundColor: isExpanded ? "#f8f8f8" : "#fff",
-        overflow: "hidden",
-      }}
-      onClick={toggleExpand}
-    >
-      <div
-        style={{
-          padding: "0.75rem 1rem",
-          fontWeight: "600",
-          backgroundColor: "#f0f0f0",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <span>📚 Table of Contents</span>
-        <span style={{ transition: "transform 0.2s", transform: `rotate(${isExpanded ? 90 : 0}deg)` }}>
-          ▶
-        </span>
-      </div>
-      {isExpanded && (
-        <div
-          style={{
-            padding: "1rem",
-            maxHeight: "400px",
-            overflowY: "auto",
-          }}
-        >
-          {headings.map((heading, index) => (
-            <a
-              key={index}
-              href={`#${heading.slug}`}
-              style={{
-                display: "block",
-                fontSize: "0.9rem",
-                padding: "0.3rem 0",
-                paddingLeft: `${(heading.level - 1) * 20}px`,
-                color: "#0070f3",
-                textDecoration: "none",
-                transition: "all 0.2s",
-              }}
-              onClick={(e) => e.stopPropagation()}
-              onMouseOver={(e) => (e.target.style.color = "#ff0070")}
-              onMouseOut={(e) => (e.target.style.color = "#0070f3")}
-            >
-              {heading.text}
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  return ( 
+    <div style={{ margin: "1rem 0", border: "1px solid #eaeaea", borderRadius: "8px", cursor: "pointer", backgroundColor: isExpanded ? "#f8f8f8" : "#fff", overflow: "hidden", }} onClick={toggleExpand} > 
+      <div style={{ padding: "0.75rem 1rem", fontWeight: "600", backgroundColor: "#f0f0f0", display: "flex", justifyContent: "space-between", alignItems: "center", }} > 
+        <span>📚 Table of Contents</span> 
+        <span style={{ transition: "transform 0.2s", transform: `rotate(${isExpanded ? 90 : 0}deg)` }}> ▶ </span> 
+      </div> 
+      {isExpanded && ( 
+        <div style={{ padding: "1rem", maxHeight: "400px", overflowY: "auto", }} > 
+          {headings.map((heading, index) => ( 
+            <a key={index} href={`#${heading.slug}`} style={{ display: "block", fontSize: "0.9rem", padding: "0.3rem 0", paddingLeft: `${(heading.level - 1) * 20}px`, color: "#0070f3", textDecoration: "none", transition: "all 0.2s", }} onClick={(e) => e.stopPropagation()} onMouseOver={(e) => (e.target.style.color = "#ff0070")} onMouseOut={(e) => (e.target.style.color = "#0070f3")} > 
+              {heading.text} 
+            </a> 
+          ))} 
+        </div> 
+      )} 
+    </div> 
+  ); 
 };
 
-export default function PostContent({ post }) {
-  const [currentUrl, setCurrentUrl] = useState("");
-  const [postTags, setPostTags] = useState("{Uncategorized}");
-  const [loading, setLoading] = useState(true);
-  const [headings, setHeadings] = useState([]);
-  const [greetingContent, setGreetingContent] = useState("");
+export default function PostContent({ post }) { 
+  const [currentUrl, setCurrentUrl] = useState(""); 
+  const [postTags, setPostTags] = useState("{Uncategorized}"); 
+  const [loading, setLoading] = useState(true); 
+  const [headings, setHeadings] = useState([]); 
+  const [greetingContent, setGreetingContent] = useState(""); 
   const [mainContent, setMainContent] = useState("");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCurrentUrl(window.location.href);
+  useEffect(() => { 
+    if (typeof window !== "undefined") { 
+      setCurrentUrl(window.location.href); 
     }
 
     if (post?.content) {
@@ -128,7 +84,7 @@ export default function PostContent({ post }) {
       } else {
         const greetingLines = lines.slice(0, firstHeadingIndex);
         const mainLines = lines.slice(firstHeadingIndex);
-        setGreetingContent(greetingLines.join("\n"));
+ setGreetingContent(greetingLines.join("\n"));
         setMainContent(mainLines.join("\n"));
       }
     }
@@ -136,14 +92,9 @@ export default function PostContent({ post }) {
     setLoading(false);
   }, [post]);
 
-  const getFormattedDate = () => {
-    try {
-      const createdAt = post?.createdAt
-        ? typeof post.createdAt === "number"
-          ? new Date(post.createdAt)
-          : post.createdAt.toDate()
-        : new Date();
-
+  const getFormattedDate = () => { 
+    try { 
+      const createdAt = post?.createdAt ? (typeof post.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate()) : new Date();
       return format(createdAt, "eeee MMM dd, yyyy - h:mm a,");
     } catch (e) {
       console.error("Date formatting error:", e);
@@ -151,13 +102,12 @@ export default function PostContent({ post }) {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>; 
   if (!post) return <div>Post not found</div>;
 
-  return (
-    <>
+  return ( 
+    <> 
       <ReadingProgressBar />
-
       <div className="card">
         <h1>{post?.title || "Untitled Post"}</h1>
         <span className="text-sm">
@@ -167,22 +117,17 @@ export default function PostContent({ post }) {
           </Link>{" "}
           on {getFormattedDate()} {postTags}
         </span>
-
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
-
         <MarkdownPreview content={greetingContent} />
         {headings.length > 0 && <TableOfContents headings={headings} />}
         <MarkdownPreview content={mainContent} />
       </div>
-
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
           {/* Facebook */}
           <a
-            href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(
-              post.title
-            )}&u=${encodeURIComponent(currentUrl)}`}
+            href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(post.title)}&u=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -191,12 +136,9 @@ export default function PostContent({ post }) {
           >
             <FaFacebook size={16} />
           </a>
-
           {/* Twitter */}
           <a
-            href={`https://x.com/intent/tweet?text=${encodeURIComponent(
-              post.title
-            )}&url=${encodeURIComponent(currentUrl)}`}
+            href={`https://x.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -205,7 +147,6 @@ export default function PostContent({ post }) {
           >
             <FaTwitter size={16} />
           </a>
-
           {/* WhatsApp */}
           <a
             href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + currentUrl)}`}
@@ -217,12 +158,9 @@ export default function PostContent({ post }) {
           >
             <FaWhatsapp size={16} />
           </a>
-
           {/* Telegram */}
           <a
-            href={`https://t.me/share/url?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(
-              currentUrl
-            )}`}
+            href={`https://t.me/share/url?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -231,16 +169,10 @@ export default function PostContent({ post }) {
           >
             <FaTelegram size={16} />
           </a>
-
           {/* Copy Link */}
           <button
             className="btn"
-            style={{
-              backgroundColor: "var(--color-accent)",
-              color: "white",
-              fontSize: "1rem",
-              padding: "0.6rem 1rem",
-            }}
+            style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             onClick={() => {
               navigator.clipboard.writeText(post.title + " " + currentUrl);
               alert("Link copied to clipboard!");
@@ -252,5 +184,5 @@ export default function PostContent({ post }) {
         </div>
       </div>
     </>
-  );
+  ); 
 }
