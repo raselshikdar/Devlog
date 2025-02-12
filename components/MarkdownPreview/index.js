@@ -8,12 +8,14 @@ import s from "./MDstyles.module.css";
 
 const MarkdownPreview = ({ content }) => {
   const notifyOnCopy = () => {
-    toast.success("copied to clipboard");
+    toast.success("Copied to clipboard");
   };
 
   // Custom heading renderer to add IDs
   const headingRenderer = ({ level, children }) => {
-    const text = children[0]; // Assuming the heading text is the first child
+    const text = React.Children.toArray(children)
+      .map(child => (typeof child === 'string' ? child : child.props.children))
+      .join('');
     const slug = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
     return React.createElement(`h${level}`, { id: slug }, children);
   };
