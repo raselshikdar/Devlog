@@ -2,7 +2,7 @@ import { Code, CopyBlock, dracula } from "react-code-blocks";
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useState } from "react"; // For managing TOC state
+import { useState, useEffect } from "react"; // For managing TOC state
 
 import { supportedLanguages } from "./supportedLangs";
 import s from "./MDstyles.module.css";
@@ -20,15 +20,25 @@ const MarkdownPreview = ({ content }) => {
       .map(child => (typeof child === "string" ? child : child.props.children))
       .join("");
     const slug = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
-    
-    // Update TOC state
-    setToc(prevToc => [
-      ...prevToc,
-      { level, text, slug }
-    ]);
 
     return React.createElement(`h${level}`, { id: slug }, children);
   };
+
+  // Effect hook to update TOC after content is rendered
+  useEffect(() => {
+    // Extract headings from the content
+    const headings = [];
+    const headingElements = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+    headingElements.forEach((heading) => {
+      const slug = heading.id;
+      const level = parseInt(heading.tagName[1]);
+      const text = heading.textContent;
+      headings.push({ level, text, slug });
+    });
+
+    setToc(headings);
+  }, [content]); // Run the effect when content changes
 
   return (
     <div className={s.previewContainer}>
