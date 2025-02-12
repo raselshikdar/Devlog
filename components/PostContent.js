@@ -89,7 +89,7 @@ export default function PostContent({ post, nightMode }) {
 
       // Process headings and split content
       const lines = post.content.split("\n");
-      let first HeadingIndex = -1;
+      let firstHeadingIndex = -1; // Corrected variable name
       const extractedHeadings = [];
 
       for (let i = 0; i < lines.length; i++) {
@@ -126,9 +126,9 @@ export default function PostContent({ post, nightMode }) {
   const getFormattedDate = () => {
     try {
       const createdAt = post?.createdAt ? (typeof post.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate()) : new Date();
-      return format(createdAt, "eeee MMM dd, yyyy - h:mm a,");
+      return format(createdAt, "eeee MMM dd, yyyy - h:mm a");
     } catch (e) {
-      console.error("Date formatting error:", e);
+      console.error(" Date formatting error:", e);
       return "[Invalid Date]";
     }
   };
@@ -156,7 +156,6 @@ export default function PostContent({ post, nightMode }) {
       <div className="card">
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-          {/* Facebook */}
           <a
             href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(post.title)}&u=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -167,7 +166,6 @@ export default function PostContent({ post, nightMode }) {
           >
             <FaFacebook size={16} />
           </a>
-          {/* Twitter */}
           <a
             href={`https://x.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -178,7 +176,6 @@ export default function PostContent({ post, nightMode }) {
           >
             <FaTwitter size={16} />
           </a>
-          {/* WhatsApp */}
           <a
             href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + currentUrl)}`}
             className="btn"
@@ -189,7 +186,6 @@ export default function PostContent({ post, nightMode }) {
           >
             <FaWhatsapp size={16} />
           </a>
-          {/* Telegram */}
           <a
             href={`https://t.me/share/url?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
@@ -200,7 +196,6 @@ export default function PostContent({ post, nightMode }) {
           >
             <FaTelegram size={16} />
           </a>
-          {/* Copy Link */}
           <button
             className="btn"
             style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
@@ -216,4 +211,4 @@ export default function PostContent({ post, nightMode }) {
       </div>
     </>
   ); 
-} 
+}
