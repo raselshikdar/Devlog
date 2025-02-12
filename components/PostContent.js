@@ -18,7 +18,7 @@ const TableOfContents = ({ headings, nightMode }) => {
       border: nightMode ? "1px solid #444" : "1px solid #eaeaea", 
       borderRadius: "8px", 
       cursor: "pointer", 
-      backgroundColor: isExpanded ? (nightMode ? "#333" : "#f8f8f8") : (nightMode ? "#222" : "#fff"), 
+      backgroundColor: isExpanded ? (nightMode ? "#333" : "#f8f8f8") : (nightMode ? "#ccc" : "#fff"), // Ash color for night mode
       overflow: "hidden", 
     }} onClick={toggleExpand} > 
       <div style={{ 
@@ -84,12 +84,12 @@ export default function PostContent({ post, nightMode }) {
           .map((tag) => tag.trim())
           .filter((tag) => tag);
 
-        setPostTags (tags.length > 0 ? `{${tags.slice(0, 2).join(", ")}}` : "{Uncategorized}");
+        setPostTags(tags.length > 0 ? `{${tags.slice(0, 2).join(", ")}}` : "{Uncategorized}");
       }
 
       // Process headings and split content
       const lines = post.content.split("\n");
-      let firstHeadingIndex = -1;
+      let firstHeadingIndex = - 1;
       const extractedHeadings = [];
 
       for (let i = 0; i < lines.length; i++) {
@@ -123,8 +123,8 @@ export default function PostContent({ post, nightMode }) {
     setLoading(false);
   }, [post]);
 
-  const getFormattedDate = () => { 
-    try { 
+  const getFormattedDate = () => {
+    try {
       const createdAt = post?.createdAt ? (typeof post.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate()) : new Date();
       return format(createdAt, "eeee MMM dd, yyyy - h:mm a,");
     } catch (e) {
@@ -133,11 +133,11 @@ export default function PostContent({ post, nightMode }) {
     }
   };
 
-  if (loading) return <div>Loading...</div>; 
+  if (loading) return <div>Loading...</div>;
   if (!post) return <div>Post not found</div>;
 
-  return ( 
-    <> 
+  return (
+    <>
       <ReadingProgressBar />
       <div className="card">
         <h1>{post?.title || "Untitled Post"}</h1>
@@ -192,12 +192,12 @@ export default function PostContent({ post, nightMode }) {
           {/* Telegram */}
           <a
             href={`https://t.me/share/url?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
-            className=" btn"
+            className="btn"
             style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Share on Telegram"
-          >
+ >
             <FaTelegram size={16} />
           </a>
           {/* Copy Link */}
