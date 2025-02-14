@@ -85,6 +85,7 @@ const TableOfContents = ({ headings, nightMode }) => {
 export default function PostContent({ post, nightMode }) {
   const [currentUrl, setCurrentUrl] = useState("");
   const [postTags, setPostTags] = useState("{Uncategorized}");
+  const [extractedTags, setExtractedTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [headings, setHeadings] = useState([]);
   const [greetingContent, setGreetingContent] = useState("");
@@ -97,22 +98,20 @@ export default function PostContent({ post, nightMode }) {
     }
 
     if (post?.content) {
-      // Extract first image from content
+      // Extract the first image from content
       const imageRegex = /!.*?(.*?)/;
       const imageMatch = post.content.match(imageRegex);
       if (imageMatch) setFirstImageUrl(imageMatch[1]);
 
-      // Process tags from the content
+      // Process tags from the content (without mutating props)
       const tagMatch = post.content.match(/Tags:\s*([\w\s,]+)/i);
       if (tagMatch) {
         const tags = tagMatch[1]
           .split(",")
           .map((tag) => tag.trim())
           .filter((tag) => tag);
-
         setPostTags(tags.length > 0 ? `{${tags.slice(0, 2).join(", ")}}` : "{Uncategorized}");
-        // Update post object with tags for SchemaMarkup (if not already present)
-        post.tags = tags;
+        setExtractedTags(tags);
       }
 
       // Process headings and split content
@@ -165,6 +164,9 @@ export default function PostContent({ post, nightMode }) {
   if (loading) return <div>Loading...</div>;
   if (!post) return <div>Post not found</div>;
 
+  // Build an enhanced post object that includes the extracted tags.
+  const enhancedPost = { ...post, tags: extractedTags };
+
   return (
     <>
       <Head>
@@ -175,8 +177,8 @@ export default function PostContent({ post, nightMode }) {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
-      {/* Schema Markup Integration */}
-      <SchemaMarkup post={post} />
+      {/* Schema Markup Integration with the enhanced post */}
+      <SchemaMarkup post={enhancedPost} />
 
       <ReadingProgressBar />
       <div className="card">
