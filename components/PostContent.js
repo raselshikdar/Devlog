@@ -5,6 +5,7 @@ import format from "date-fns/format";
 import { useEffect, useState } from "react";
 import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-icons/fa";
 import ReadingProgressBar from "./ReadingProgressBar";
+import SchemaMarkup from "./SchemaMarkup";
 
 const TableOfContents = ({ headings, nightMode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -14,46 +15,64 @@ const TableOfContents = ({ headings, nightMode }) => {
   };
 
   return (
-    <div style={{
-      margin: "1rem 0",
-      border: nightMode ? "1px solid #444" : "1px solid #eaeaea",
-      borderRadius: "8px",
-      cursor: "pointer",
-      backgroundColor: isExpanded ? (nightMode ? "#444" : "#f8f8f8") : (nightMode ? "#ccc" : "#fff"),
-      overflow: "hidden",
-    }} onClick={toggleExpand}>
-      <div style={{
-        padding: "0.75rem 1rem",
-        fontWeight: "600",
-        backgroundColor: nightMode ? "#444" : "#f0f0f0",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}>
+    <div
+      style={{
+        margin: "1rem 0",
+        border: nightMode ? "1px solid #444" : "1px solid #eaeaea",
+        borderRadius: "8px",
+        cursor: "pointer",
+        backgroundColor: isExpanded ? (nightMode ? "#444" : "#f8f8f8") : (nightMode ? "#ccc" : "#fff"),
+        overflow: "hidden",
+      }}
+      onClick={toggleExpand}
+    >
+      <div
+        style={{
+          padding: "0.75rem 1rem",
+          fontWeight: "600",
+          backgroundColor: nightMode ? "#444" : "#f0f0f0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <span style={{ color: nightMode ? "#fff" : "#000" }}>📚 Table of Contents</span>
-        <span style={{
-          transition: "transform 0.2s",
-          transform: `rotate(${isExpanded ? 90 : 0}deg)`,
-          color: nightMode ? "#fff" : "#000"
-        }}> ▶ </span>
+        <span
+          style={{
+            transition: "transform 0.2s",
+            transform: `rotate(${isExpanded ? 90 : 0}deg)`,
+            color: nightMode ? "#fff" : "#000",
+          }}
+        >
+          ▶
+        </span>
       </div>
       {isExpanded && (
-        <div style={{
-          padding: "1rem",
-          maxHeight: "400px",
-          overflowY: "auto",
-          backgroundColor: nightMode ? "#222" : "#fff",
-        }}>
+        <div
+          style={{
+            padding: "1rem",
+            maxHeight: "400px",
+            overflowY: "auto",
+            backgroundColor: nightMode ? "#222" : "#fff",
+          }}
+        >
           {headings.map((heading, index) => (
-            <a key={index} href={`#${heading.slug}`} style={{
-              display: "block",
-              fontSize: "0.9rem",
-              padding: "0.3rem 0",
-              paddingLeft: `${(heading.level - 1) * 20}px`,
-              color: nightMode ? "#1e90ff" : "#0070f3",
-              textDecoration: "none",
-              transition: "all 0.2s",
-            }} onClick={(e) => e.stopPropagation()} onMouseOver={(e) => (e.target.style.color = nightMode ? "#ff0070" : "#ff0070")} onMouseOut={(e) => (e.target.style.color = nightMode ? "#1e90ff" : "#0070f3")}>
+            <a
+              key={index}
+              href={`#${heading.slug}`}
+              style={{
+                display: "block",
+                fontSize: "0.9rem",
+                padding: "0.3rem 0",
+                paddingLeft: `${(heading.level - 1) * 20}px`,
+                color: nightMode ? "#1e90ff" : "#0070f3",
+                textDecoration: "none",
+                transition: "all 0.2s",
+              }}
+              onClick={(e) => e.stopPropagation()}
+              onMouseOver={(e) => (e.target.style.color = nightMode ? "#ff0070" : "#ff0070")}
+              onMouseOut={(e) => (e.target.style.color = nightMode ? "#1e90ff" : "#0070f3")}
+            >
               {heading.text}
             </a>
           ))}
@@ -79,11 +98,11 @@ export default function PostContent({ post, nightMode }) {
 
     if (post?.content) {
       // Extract first image from content
-      const imageRegex = /!\[.*?\]\((.*?)\)/;
+      const imageRegex = /!.*?(.*?)/;
       const imageMatch = post.content.match(imageRegex);
       if (imageMatch) setFirstImageUrl(imageMatch[1]);
 
-      // Process tags
+      // Process tags from the content
       const tagMatch = post.content.match(/Tags:\s*([\w\s,]+)/i);
       if (tagMatch) {
         const tags = tagMatch[1]
@@ -92,6 +111,8 @@ export default function PostContent({ post, nightMode }) {
           .filter((tag) => tag);
 
         setPostTags(tags.length > 0 ? `{${tags.slice(0, 2).join(", ")}}` : "{Uncategorized}");
+        // Update post object with tags for SchemaMarkup (if not already present)
+        post.tags = tags;
       }
 
       // Process headings and split content
@@ -106,10 +127,7 @@ export default function PostContent({ post, nightMode }) {
           if (firstHeadingIndex === -1) firstHeadingIndex = i;
           const level = headingMatch[1].length;
           const text = headingMatch[2].trim();
-          const slug = text
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w-]+/g, "");
+          const slug = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
           extractedHeadings.push({ level, text, slug });
         }
       }
@@ -132,7 +150,11 @@ export default function PostContent({ post, nightMode }) {
 
   const getFormattedDate = () => {
     try {
-      const createdAt = post?.createdAt ? (typeof post.createdAt === "number" ? new Date(post.createdAt) : post.createdAt.toDate()) : new Date();
+      const createdAt = post?.createdAt
+        ? typeof post.createdAt === "number"
+          ? new Date(post.createdAt)
+          : post.createdAt.toDate()
+        : new Date();
       return format(createdAt, "eeee MMM dd, yyyy - h:mm a");
     } catch (e) {
       console.error("Date formatting error:", e);
@@ -152,6 +174,9 @@ export default function PostContent({ post, nightMode }) {
         <meta property="og:url" content={currentUrl} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
+
+      {/* Schema Markup Integration */}
+      <SchemaMarkup post={post} />
 
       <ReadingProgressBar />
       <div className="card">
@@ -173,7 +198,9 @@ export default function PostContent({ post, nightMode }) {
         <h3>Share This Post</h3>
         <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
           <a
-            href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(post.title)}&u=${encodeURIComponent(currentUrl)}`}
+            href={`https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(
+              post.title
+            )}&u=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -183,7 +210,9 @@ export default function PostContent({ post, nightMode }) {
             <FaFacebook size={16} />
           </a>
           <a
-            href={`https://x.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
+            href={`https://x.com/intent/tweet?text=${encodeURIComponent(
+              post.title
+            )}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
@@ -203,7 +232,9 @@ export default function PostContent({ post, nightMode }) {
             <FaWhatsapp size={16} />
           </a>
           <a
-            href={`https://t.me/share/url?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(currentUrl)}`}
+            href={`https://t.me/share/url?text=${encodeURIComponent(
+              post.title
+            )}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
             style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             target="_blank"
