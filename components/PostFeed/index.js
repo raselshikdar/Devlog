@@ -5,7 +5,7 @@ import s from "./PostFeed.module.css";
 export default function PostFeed({ posts, admin }) {
   return (
     <div className={s.container}>
-      {posts?.map(post => (
+      {posts?.map((post) => (
         <PostItem post={post} key={post.slug} admin={admin} />
       ))}
     </div>
@@ -15,21 +15,21 @@ export default function PostFeed({ posts, admin }) {
 function PostItem({ post, admin = false }) {
   const wordCount = post?.content?.trim().split(/\s+/g).length || 0;
   const minutesToRead = (wordCount / 100 + 1).toFixed(0);
-  
+
   // Safe timestamp conversion
-  const createdAt = post?.createdAt 
+  const createdAt = post?.createdAt
     ? formatDistanceToNow(
-        post.createdAt?.toDate?.() || new Date(post.createdAt), 
+        post.createdAt?.toDate?.() || new Date(post.createdAt),
         { addSuffix: true }
       )
-    : 'just now';
+    : "just now";
 
   return (
     <div className="card">
       <div className={s.postHeader}>
         <Link href={`/${post.username}`}>
           <a>
-            <strong>By @{post.username}</strong>
+            <strong className={s.username}>By @{post.username}</strong>
           </a>
         </Link>
         <span className={s.daysAgo}>{createdAt}</span>
