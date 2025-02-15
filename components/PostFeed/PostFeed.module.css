@@ -17,7 +17,7 @@
   color: #666;
 }
 
-/* New class to ensure username color matches the footer text */
-.username {
-  color: inherit;
+/* New rule to ensure the username color matches the footer text */
+.postHeader a strong.username {
+  color: var(--color-text) !important;
 }
