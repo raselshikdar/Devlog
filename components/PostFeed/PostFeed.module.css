@@ -16,8 +16,3 @@
   font-size: 0.85rem;
   color: #666;
 }
-
-/* Updated rule with increased specificity so that the username color matches the footer text */
-.card .postHeader a strong.username {
-  color: var(--color-text) !important;
-}
