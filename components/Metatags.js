@@ -13,15 +13,16 @@ export default function Metatags({
   const router = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://devlog.rweb.site";
   
-  // Get current path and construct canonical URL
-  const currentPath = router.asPath;
-  const canonicalUrl = url ? `${baseUrl}${url}` : `${baseUrl}${currentPath}`;
+  // Remove query parameters and hash from the current path for a clean canonical URL
+  const cleanPath = router.asPath.split('?')[0].split('#')[0];
+  const canonicalUrl = url ? `${baseUrl}${url}` : `${baseUrl}${cleanPath}`;
 
   // Clean and truncate the description
   const metaDescription = cleanDescription(description);
 
   return (
     <Head>
+      <meta charSet="utf-8" />
       {/* Primary Meta Tags */}
       <title>{title}</title>
       <meta name="title" content={title} />
@@ -44,6 +45,7 @@ export default function Metatags({
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@raselshikdar_" />
+      <meta name="twitter:creator" content="@raselshikdar_" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={getAbsoluteImageUrl(image)} />
