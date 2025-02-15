@@ -10,9 +10,7 @@ import SchemaMarkup from "./SchemaMarkup";
 const TableOfContents = ({ headings, nightMode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+  const toggleExpand = () => setIsExpanded(!isExpanded);
 
   return (
     <div
@@ -70,7 +68,7 @@ const TableOfContents = ({ headings, nightMode }) => {
                 transition: "all 0.2s",
               }}
               onClick={(e) => e.stopPropagation()}
-              onMouseOver={(e) => (e.target.style.color = nightMode ? "#ff0070" : "#ff0070")}
+              onMouseOver={(e) => (e.target.style.color = "#ff0070")}
               onMouseOut={(e) => (e.target.style.color = nightMode ? "#1e90ff" : "#0070f3")}
             >
               {heading.text}
@@ -98,10 +96,15 @@ export default function PostContent({ post, nightMode }) {
     }
 
     if (post?.content) {
-      // Extract the first image from content
+      // Use a standard markdown image regex: ![alt](url)
       const imageRegex = /!.*?(.*?)/;
       const imageMatch = post.content.match(imageRegex);
-      if (imageMatch) setFirstImageUrl(imageMatch[1]);
+      if (imageMatch) {
+        setFirstImageUrl(imageMatch[1]);
+      } else {
+        // Fallback image if none is found
+        setFirstImageUrl("/featured.png");
+      }
 
       // Process tags from the content (without mutating props)
       const tagMatch = post.content.match(/Tags:\s*([\w\s,]+)/i);
@@ -249,7 +252,7 @@ export default function PostContent({ post, nightMode }) {
             className="btn"
             style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
             onClick={() => {
-              navigator.clipboard.writeText(post.title + " " + currentUrl);
+              navigator.clipboard.writeText(`${post.title} ${currentUrl}`);
               alert("Link copied to clipboard!");
             }}
             aria-label="Copy post link"
