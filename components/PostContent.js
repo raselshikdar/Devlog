@@ -7,9 +7,25 @@ import { FaFacebook, FaTwitter, FaTelegram, FaWhatsapp, FaCopy } from "react-ico
 import ReadingProgressBar from "./ReadingProgressBar";
 import SchemaMarkup from "./SchemaMarkup";
 
+// --- A helper to extract a text-only snippet (first 180 chars) from Markdown ---
+function getSnippet(markdown = "") {
+  // 1) Remove code blocks, images, and links
+  let textOnly = markdown
+    .replace(/```[^`]*```/g, "")              // remove fenced code blocks
+    .replace(/![^]*([^)]*)/g, "")   // remove images
+    .replace(/[^]*([^)]*)/g, "")    // remove links
+    // 2) Remove leftover Markdown syntax (#, *, etc.)
+    .replace(/[#>*_`~\-]/g, "")
+    // 3) Collapse extra spaces/newlines
+    .replace(/\s+/g, " ")
+    .trim();
+
+  // Return up to 180 chars
+  return textOnly.slice(0, 180);
+}
+
 const TableOfContents = ({ headings, nightMode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
   const toggleExpand = () => setIsExpanded(!isExpanded);
 
   return (
@@ -19,7 +35,9 @@ const TableOfContents = ({ headings, nightMode }) => {
         border: nightMode ? "1px solid #444" : "1px solid #eaeaea",
         borderRadius: "8px",
         cursor: "pointer",
-        backgroundColor: isExpanded ? (nightMode ? "#444" : "#f8f8f8") : (nightMode ? "#ccc" : "#fff"),
+        backgroundColor: isExpanded
+          ? nightMode ? "#444" : "#f8f8f8"
+          : nightMode ? "#ccc" : "#fff",
         overflow: "hidden",
       }}
       onClick={toggleExpand}
@@ -89,6 +107,7 @@ export default function PostContent({ post, nightMode }) {
   const [greetingContent, setGreetingContent] = useState("");
   const [mainContent, setMainContent] = useState("");
   const [firstImageUrl, setFirstImageUrl] = useState("");
+  const [descriptionSnippet, setDescriptionSnippet] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -96,17 +115,20 @@ export default function PostContent({ post, nightMode }) {
     }
 
     if (post?.content) {
-      // Use a standard markdown image regex: ![alt](url)
+      // 1) Extract the first image from Markdown: ![alt](url)
       const imageRegex = /!.*?(.*?)/;
       const imageMatch = post.content.match(imageRegex);
       if (imageMatch) {
-        setFirstImageUrl(imageMatch[1]);
+        setFirstImageUrl(imageMatch[1]);  // Should be a fully qualified URL
       } else {
         // Fallback image if none is found
         setFirstImageUrl("/featured.png");
       }
 
-      // Process tags from the content (without mutating props)
+      // 2) Generate a snippet for meta description (first 180 chars of text)
+      setDescriptionSnippet(getSnippet(post.content));
+
+      // 3) Process tags from the content
       const tagMatch = post.content.match(/Tags:\s*([\w\s,]+)/i);
       if (tagMatch) {
         const tags = tagMatch[1]
@@ -117,7 +139,7 @@ export default function PostContent({ post, nightMode }) {
         setExtractedTags(tags);
       }
 
-      // Process headings and split content
+      // 4) Process headings and split content
       const lines = post.content.split("\n");
       let firstHeadingIndex = -1;
       const extractedHeadings = [];
@@ -129,7 +151,10 @@ export default function PostContent({ post, nightMode }) {
           if (firstHeadingIndex === -1) firstHeadingIndex = i;
           const level = headingMatch[1].length;
           const text = headingMatch[2].trim();
-          const slug = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, "");
+          const slug = text
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
           extractedHeadings.push({ level, text, slug });
         }
       }
@@ -173,11 +198,18 @@ export default function PostContent({ post, nightMode }) {
   return (
     <>
       <Head>
-        <meta property="og:image" content={firstImageUrl} />
-        <meta name="twitter:image" content={firstImageUrl} />
+        {/* Open Graph / Facebook */}
         <meta property="og:title" content={post?.title || "Untitled Post"} />
+        <meta property="og:description" content={descriptionSnippet} />
+        <meta property="og:image" content={firstImageUrl} />
         <meta property="og:url" content={currentUrl} />
+        {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post?.title || "Untitled Post"} />
+        <meta name="twitter:description" content={descriptionSnippet} />
+        <meta name="twitter:image" content={firstImageUrl} />
+        {/* Basic meta description (optional, good for SEO) */}
+        <meta name="description" content={descriptionSnippet} />
       </Head>
 
       {/* Schema Markup Integration with the enhanced post */}
@@ -195,7 +227,9 @@ export default function PostContent({ post, nightMode }) {
         </span>
         <hr style={{ border: "2px solid #1dd1a1", margin: "0 0 1rem 0" }} />
         <MarkdownPreview content={greetingContent} />
-        {headings.length > 0 && <TableOfContents headings={headings} nightMode={nightMode} />}
+        {headings.length > 0 && (
+          <TableOfContents headings={headings} nightMode={nightMode} />
+        )}
         <MarkdownPreview content={mainContent} />
       </div>
 
@@ -207,7 +241,12 @@ export default function PostContent({ post, nightMode }) {
               post.title
             )}&u=${encodeURIComponent(currentUrl)}`}
             className="btn"
-            style={{ backgroundColor: "#3b5998", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            style={{
+              backgroundColor: "#3b5998",
+              color: "white",
+              fontSize: "1rem",
+              padding: "0.6rem 1rem",
+            }}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Share on Facebook"
@@ -219,7 +258,12 @@ export default function PostContent({ post, nightMode }) {
               post.title
             )}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
-            style={{ backgroundColor: "#1DA1F2", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            style={{
+              backgroundColor: "#1DA1F2",
+              color: "white",
+              fontSize: "1rem",
+              padding: "0.6rem 1rem",
+            }}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Share on Twitter"
@@ -227,9 +271,16 @@ export default function PostContent({ post, nightMode }) {
             <FaTwitter size={16} />
           </a>
           <a
-            href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + currentUrl)}`}
+            href={`https://wa.me/?text=${encodeURIComponent(
+              post.title + " " + currentUrl
+            )}`}
             className="btn"
-            style={{ backgroundColor: "#25D366", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            style={{
+              backgroundColor: "#25D366",
+              color: "white",
+              fontSize: "1rem",
+              padding: "0.6rem 1rem",
+            }}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Share on WhatsApp"
@@ -241,7 +292,12 @@ export default function PostContent({ post, nightMode }) {
               post.title
             )}&url=${encodeURIComponent(currentUrl)}`}
             className="btn"
-            style={{ backgroundColor: "#0088cc", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            style={{
+              backgroundColor: "#0088cc",
+              color: "white",
+              fontSize: "1rem",
+              padding: "0.6rem 1rem",
+            }}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Share on Telegram"
@@ -250,7 +306,12 @@ export default function PostContent({ post, nightMode }) {
           </a>
           <button
             className="btn"
-            style={{ backgroundColor: "var(--color-accent)", color: "white", fontSize: "1rem", padding: "0.6rem 1rem" }}
+            style={{
+              backgroundColor: "var(--color-accent)",
+              color: "white",
+              fontSize: "1rem",
+              padding: "0.6rem 1rem",
+            }}
             onClick={() => {
               navigator.clipboard.writeText(`${post.title} ${currentUrl}`);
               alert("Link copied to clipboard!");
